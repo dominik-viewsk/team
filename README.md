@@ -84,7 +84,7 @@ Umožňuje manažérovi aj obchodníkom mať jasný prehľad o výkone tímu a c
 Projekt spravuje:  
 **Martin Dominik**  
 Manažér obchodného tímu View  
-📧 [admin@view.sk](mailto:admin@view.sk)
+📧 [dominik@viewsk.com](mailto:dominik@viewsk.com)
 
 ---
 
