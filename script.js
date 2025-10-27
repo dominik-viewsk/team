@@ -75,6 +75,10 @@ function startApp(){
   const u = currentUser();
   $('#userLabel').textContent = u.name + ' ('+ u.email +')';
 
+  // Zatvor modal ak bol omylom otvorený
+  const modal = document.getElementById('reportModal');
+  if (modal) modal.classList.add('hidden');
+
   // Načítaj dáta a vykresli obsah
   renderHome();
   renderKPI();
@@ -82,10 +86,27 @@ function startApp(){
 
   // Otvor hlavnú stránku (Domov)
   routeTo('home');
-
-  // Uisti sa, že report modal je zatvorený po prihlásení
-  closeModal();
 }
+
+// Upravené otváranie reportu – zobrazí modal len po kliknutí
+function openReport(){
+  const user = currentUser();
+  if(!user){ alert('Prihlásenie vyžadované'); return; }
+  $('#rContacts').value = '';
+  $('#rOutreaches').value = '';
+  $('#rMeetings').value = '';
+  $('#rOffers').value = '';
+  $('#rOrders').value = '';
+  $('#rRevenue').value = '';
+  document.getElementById('reportModal').classList.remove('hidden');
+}
+
+// Zavretie modalu – vždy funguje
+function closeModal(){
+  const modal = document.getElementById('reportModal');
+  if (modal) modal.classList.add('hidden');
+}
+
 
 function routeTo(page){
   $all('.page').forEach(p=> p.classList.add('hidden'));
