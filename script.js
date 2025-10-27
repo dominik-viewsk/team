@@ -67,10 +67,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 function showLogin(){ $('#loginView').classList.remove('hidden'); $('#dashboardView').classList.add('hidden'); }
 function startApp(){
-  $('#loginView').classList.add('hidden'); $('#dashboardView').classList.remove('hidden');
-  const u = currentUser(); $('#userLabel').textContent = u.name + ' ('+ u.email +')';
-  renderHome(); renderKPI(); renderTeam();
+  // Skry login, zobraz dashboard
+  $('#loginView').classList.add('hidden');
+  $('#dashboardView').classList.remove('hidden');
+
+  // Zobraz prihláseného používateľa v hlavičke
+  const u = currentUser();
+  $('#userLabel').textContent = u.name + ' ('+ u.email +')';
+
+  // Načítaj dáta a vykresli obsah
+  renderHome();
+  renderKPI();
+  renderTeam();
+
+  // Otvor hlavnú stránku (Domov)
   routeTo('home');
+
+  // Uisti sa, že report modal je zatvorený po prihlásení
+  closeModal();
 }
 
 function routeTo(page){
