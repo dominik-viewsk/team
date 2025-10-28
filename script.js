@@ -1,5 +1,5 @@
 
-// View Team Dashboard PRO v2.3 (final)
+// View Team Dashboard PRO v2.3.1 (fix progress bar)
 const DEFAULT_PASS = 'view2025';
 const ADMIN_EMAIL = 'dominik@viewsk.com';
 const ADMIN_PASS = 'viewadmin2025';
@@ -86,15 +86,16 @@ function renderHomeSales(email){
   const hint = document.getElementById('goalHint');
 
   rEl.textContent = rev;
-  if(goal == null || goal === ''){
+  if(goal == null || goal === '' || isNaN(goal)){
     gEl.textContent = 'nenastavené';
     pEl.textContent = '—';
     bar.style.width = '0%';
     bar.style.background = '#ccc';
     hint.textContent = 'Cieľ ešte nebol nastavený. Kontaktuj manažéra.';
   }else{
-    const pct = goal>0 ? Math.round((rev/goal)*100) : 0;
-    gEl.textContent = goal;
+    const g = +goal;
+    const pct = g>0 ? Math.round((rev/g)*100) : 0;
+    gEl.textContent = g;
     pEl.textContent = pct + '%';
     bar.style.width = Math.min(pct, 100) + '%';
     bar.style.background = pct>=100 ? '#28A745' : (pct>=80 ? '#ff9800' : '#e53935');
@@ -161,6 +162,8 @@ function renderGoalsTable(){
       USERS[email].goal = v==='' ? null : Math.max(0, Math.round(+v));
       saveUsers(USERS);
       renderKPI();
+      const cur = currentUser();
+      if(cur && cur.email === email){ renderHomeSales(email); }
       alert('Cieľ uložený.');
     });
   });
@@ -227,7 +230,9 @@ function saveReport(){
   const rev = +document.getElementById('rRevenue').value || 0;
   DATA.users[who] = { contacts:c, outreaches:o, meetings:m, offers:p, orders:ord, revenue:rev };
   saveData(DATA);
-  renderKPI(); renderHomeFor(currentUser());
+  renderKPI(); 
+  const u = currentUser();
+  if(u && u.role==='sales'){ renderHomeSales(u.email); } else { renderHomeFor(u); }
   closeReport();
   alert('Report uložený.');
 }
@@ -263,7 +268,9 @@ function resetData(){
     DATA.users[email] = {contacts:0,outreaches:0,meetings:0,offers:0,orders:0,revenue:0};
   });
   saveData(DATA);
-  renderKPI(); renderHomeFor(currentUser());
+  renderKPI(); 
+  const u = currentUser();
+  if(u && u.role==='sales'){ renderHomeSales(u.email); } else { renderHomeFor(u); }
   alert('Dáta boli vynulované.');
 }
 
