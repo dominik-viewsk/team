@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Dashboard - Interný portál</title>
+  <title>View Team Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,53 +11,45 @@
     <div class="wrap">
       <img src="viewlogo.png" alt="View logo" class="logo">
       <div class="title">
-        <h1>View Dashboard</h1>
+        <h1>View Team Dashboard</h1>
         <div class="subtitle">Interný portál obchodného tímu</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="nav-right">
+        <span id="userLabel"></span>
+        <button id="logoutBtn" class="btn small hidden">Odhlásiť</button>
       </div>
     </div>
   </header>
 
-  <main id="app" class="wrap">
-
-    <div id="loginView" class="card center">
+  <main class="wrap">
+    <div id="loginView" class="card login-card">
       <h2>Prihlásenie</h2>
       <div class="field"><label>Login (email)</label><input id="loginInput" value="obchodnik@view.sk"></div>
       <div class="field"><label>Heslo</label><input id="passInput" type="password" value="view2025"></div>
       <div class="actions"><button id="loginBtn" class="btn">Prihlásiť</button></div>
-      <div class="hint">Použi demo účty: <br><strong>Manažér:</strong> admin@view.sk / viewadmin2025<br><strong>Obchodník:</strong> obchodnik@view.sk / view2025</div>
+      <div class="hint">Demo účty: <strong>Manažér:</strong> admin@view.sk / viewadmin2025 • <strong>Obchodník:</strong> obchodnik@view.sk / view2025</div>
     </div>
 
     <div id="dashboardView" class="hidden">
       <nav class="nav">
         <ul>
-          <li><a href="#" data-route="home">Domov</a></li>
-          <li><a href="#" data-route="kpi">KPI & Výsledky</a></li>
-          <li><a href="#" data-route="team">Tím</a></li>
-          <li><a href="#" data-route="documents">Dokumenty</a></li>
-          <li><a href="#" data-route="competitions">Súťaže</a></li>
+          <li><a href="#" data-route="home">Dashboard</a></li>
+          <li><a href="#" data-route="kpi">KPI prehľad</a></li>
+          <li><a href="#" id="linkReport">Nahrať report</a></li>
         </ul>
-        <div class="nav-right">
-          <span id="userLabel"></span>
-          <button id="logoutBtn" class="btn small">Odhlásiť</button>
-        </div>
       </nav>
 
       <section id="home" class="page">
-        <h2>Vitaj v View Dashboard</h2>
+        <h2>Prehľad tímu</h2>
         <div class="cards">
           <div class="card small"><div class="card-title">Týždeň</div><div class="card-val" id="weekVal">#44</div></div>
           <div class="card small"><div class="card-title">Celkový obrat</div><div class="card-val" id="revVal">0 €</div></div>
           <div class="card small"><div class="card-title">Objednávky (tím)</div><div class="card-val" id="ordersVal">0</div></div>
         </div>
-        <div class="welcome card">
-          <h3>Rýchle odkazy</h3>
-          <div class="links">
-            <a class="btn" id="linkKPI">Zobraziť KPI</a>
-            <a class="btn" id="linkReport">Nahrať report</a>
-            <a class="btn" id="linkLeads">Požiadať o leady</a>
-            <a class="btn" id="linkPortal" href="https://www.viewsk.com" target="_blank">Prejsť na viewsk.com</a>
-          </div>
-        </div>
+
+        <h3>Členovia tímu</h3>
+        <div id="teamList" class="grid"></div>
       </section>
 
       <section id="kpi" class="page hidden">
@@ -69,54 +61,27 @@
           </table>
         </div>
       </section>
-
-      <section id="team" class="page hidden">
-        <h2>Tím</h2>
-        <div id="teamList" class="grid"></div>
-      </section>
-
-      <section id="documents" class="page hidden">
-        <h2>Dokumenty</h2>
-        <div class="card">
-          <ul>
-            <li><a href="#" class="doc">Interný manuál (PDF) - placeholder</a></li>
-            <li><a href="#" class="doc">Call script - placeholder</a></li>
-            <li><a href="#" class="doc">Šablóna ponuky - placeholder</a></li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="competitions" class="page hidden">
-        <h2>Súťaže</h2>
-        <div class="card">
-          <p>Prebiehajúce súťaže:</p>
-          <ul>
-            <li>Najviac stretnutí tento mesiac — odmena 200 €</li>
-            <li>Najvyšší obrat — marketingová podpora</li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="reportModal" class="modal hidden">
-        <div class="modal-card">
-          <h3>Týždenný report</h3>
-          <div class="field"><label>Kontakty</label><input id="rContacts" type="number"></div>
-          <div class="field"><label>Oslovenia</label><input id="rOutreaches" type="number"></div>
-          <div class="field"><label>Stretnutia</label><input id="rMeetings" type="number"></div>
-          <div class="field"><label>Ponuky</label><input id="rOffers" type="number"></div>
-          <div class="field"><label>Objednávky</label><input id="rOrders" type="number"></div>
-          <div class="field"><label>Obrat (€)</label><input id="rRevenue" type="number"></div>
-          <div class="actions"><button id="saveReport" class="btn">Uložiť report</button> <button id="closeReport" class="btn ghost">Zavrieť</button></div>
-        </div>
-      </section>
-
     </div>
   </main>
+
+  <!-- Report modal (hidden by default) -->
+  <div id="reportModal" class="hidden modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Týždenný report</h3>
+      <div class="field"><label>Kontakty</label><input id="rContacts" type="number"></div>
+      <div class="field"><label>Oslovenia</label><input id="rOutreaches" type="number"></div>
+      <div class="field"><label>Stretnutia</label><input id="rMeetings" type="number"></div>
+      <div class="field"><label>Ponuky</label><input id="rOffers" type="number"></div>
+      <div class="field"><label>Objednávky</label><input id="rOrders" type="number"></div>
+      <div class="field"><label>Obrat (€)</label><input id="rRevenue" type="number"></div>
+      <div class="actions"><button id="saveReport" class="btn">Uložiť report</button> <button id="closeReport" class="btn ghost">Zavrieť</button></div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="wrap">© View - interný portál</div>
   </footer>
 
-<script src="script.js?v=3"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>
