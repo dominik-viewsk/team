@@ -42,7 +42,18 @@
       </nav>
 
       <section id="home" class="page">
-        <h2>Prehľad tímu</h2>
+        <h2>Prehľad</h2>
+        <div id="salesGoalCard" class="card hidden">
+          <h3>Plnenie cieľa</h3>
+          <div class="goal-line">
+            <div>🎯 Cieľ: <span id="goalVal">—</span> €</div>
+            <div>💰 Obrat: <span id="revValSales">0</span> €</div>
+            <div>📈 Plnenie: <span id="pctVal">0%</span></div>
+          </div>
+          <div class="progress"><div id="progressBar"></div></div>
+          <div id="goalHint" class="hint"></div>
+        </div>
+
         <div class="cards">
           <div class="card small"><div class="card-title">Týždeň</div><div class="card-val" id="weekVal">#44</div></div>
           <div class="card small"><div class="card-title">Celkový obrat</div><div class="card-val" id="revVal">0 €</div></div>
@@ -69,6 +80,14 @@
               <div class="hint">Duplicitné e-maily sa preskočia. Heslo = <b>view2025</b>.</div>
             </div>
           </div>
+
+          <h4 style="margin-top:16px">Ciele obchodníkov (€/mesiac)</h4>
+          <div class="card">
+            <table class="table">
+              <thead><tr><th>Meno</th><th>E-mail</th><th>Cieľ (€)</th><th>Uložiť</th></tr></thead>
+              <tbody id="goalsTable"></tbody>
+            </table>
+          </div>
         </div>
 
         <h3>Členovia tímu</h3>
@@ -83,7 +102,7 @@
         </div>
         <div class="card">
           <table class="table">
-            <thead><tr><th>Meno</th><th>Priezvisko</th><th>E-mail</th><th>Kontakty</th><th>Oslovenia</th><th>Stretnutia</th><th>Ponuky</th><th>Objednávky</th><th>Obrat (€)</th><th>Provízia</th><th>Bonus</th><th>KPI</th></tr></thead>
+            <thead><tr><th>Meno</th><th>Priezvisko</th><th>E-mail</th><th>Kontakty</th><th>Oslovenia</th><th>Stretnutia</th><th>Ponuky</th><th>Objednávky</th><th>Obrat (€)</th><th>Cieľ (€)</th><th>% plnenia</th><th>Provízia</th><th>Bonus</th><th>KPI</th></tr></thead>
             <tbody id="kpiTable"></tbody>
           </table>
         </div>
@@ -121,6 +140,6 @@
     <div class="wrap">© View - interný portál</div>
   </footer>
 
-<script src="script.js?v=7"></script>
+<script src="script.js?v=8"></script>
 </body>
 </html>

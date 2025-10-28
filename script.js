@@ -1,17 +1,13 @@
-// View Team Dashboard PRO v2.1 (patched router)
-// - Robust router with event delegation
-// - Access guard (sales cannot open KPI)
-// - Active nav highlighting
-// - Minor safety checks
 
+// View Team Dashboard PRO v2.3 (final)
 const DEFAULT_PASS = 'view2025';
 const ADMIN_EMAIL = 'dominik@viewsk.com';
 const ADMIN_PASS = 'viewadmin2025';
 
 const INITIAL_USERS = {
   "dominik@viewsk.com": { name: "Martin Dominik", role: "manager", pass: ADMIN_PASS },
-  "lukac@viewsk.com": { name: "Róbert Lukáč", role: "sales", pass: DEFAULT_PASS },
-  "illesova@viewsk.com": { name: "Martina Illesová", role: "sales", pass: DEFAULT_PASS }
+  "lukac@viewsk.com":   { name: "Róbert Lukáč", role: "sales", pass: DEFAULT_PASS, goal: null },
+  "illesova@viewsk.com":{ name: "Martina Illesová", role: "sales", pass: DEFAULT_PASS, goal: null }
 };
 
 const INITIAL_DATA = {
@@ -25,10 +21,9 @@ const INITIAL_DATA = {
 function $(s){ return document.querySelector(s); }
 function $all(s){ return Array.from(document.querySelectorAll(s)); }
 
-// storage helpers
-function loadUsers(){ try{ const r = localStorage.getItem('vd_users'); if(r) return JSON.parse(r); localStorage.setItem('vd_users', JSON.stringify(INITIAL_USERS)); return JSON.parse(JSON.stringify(INITIAL_USERS)); }catch(e){ console.warn(e); return JSON.parse(JSON.stringify(INITIAL_USERS)); } }
+function loadUsers(){ try{ const r = localStorage.getItem('vd_users'); if(r) return JSON.parse(r); localStorage.setItem('vd_users', JSON.stringify(INITIAL_USERS)); return JSON.parse(JSON.stringify(INITIAL_USERS)); }catch(e){ return JSON.parse(JSON.stringify(INITIAL_USERS)); } }
 function saveUsers(u){ localStorage.setItem('vd_users', JSON.stringify(u)); }
-function loadData(){ try{ const r = localStorage.getItem('vd_data'); if(r) return JSON.parse(r); localStorage.setItem('vd_data', JSON.stringify(INITIAL_DATA)); return JSON.parse(JSON.stringify(INITIAL_DATA)); }catch(e){ console.warn(e); return JSON.parse(JSON.stringify(INITIAL_DATA)); } }
+function loadData(){ try{ const r = localStorage.getItem('vd_data'); if(r) return JSON.parse(r); localStorage.setItem('vd_data', JSON.stringify(INITIAL_DATA)); return JSON.parse(JSON.stringify(INITIAL_DATA)); }catch(e){ return JSON.parse(JSON.stringify(INITIAL_DATA)); } }
 function saveData(d){ localStorage.setItem('vd_data', JSON.stringify(d)); }
 
 let USERS = loadUsers();
@@ -43,77 +38,96 @@ function login(email, pass){
 function currentUser(){ const r = sessionStorage.getItem('vd_user'); return r?JSON.parse(r):null; }
 function logout(){ sessionStorage.removeItem('vd_user'); location.reload(); }
 
+function routeTo(page){
+  const cur = currentUser();
+  if(page === 'kpi' && cur?.role !== 'manager'){ alert('Nemáš prístup k tejto sekcii.'); return; }
+  $all('.page').forEach(p=>p.classList.add('hidden'));
+  const el = document.getElementById(page); if(el) el.classList.remove('hidden');
+}
 function ensureModalHidden(id){ const el = document.getElementById(id); if(el){ el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); } }
 function showModal(id){ const el = document.getElementById(id); if(el){ el.classList.remove('hidden'); el.setAttribute('aria-hidden','false'); } }
 function hideModal(id){ ensureModalHidden(id); }
 
-function canAccess(page, user){
-  if(page === 'kpi' && user?.role !== 'manager') return false;
-  return true;
-}
-
-function highlightNav(route){
-  $all('[data-route]').forEach(a=> a.classList.remove('active'));
-  const el = document.querySelector(`[data-route="${route}"]`);
-  if(el) el.classList.add('active');
-}
-
-function routeTo(page){
-  const user = currentUser();
-  if(!canAccess(page, user)){
-    alert('Nemáš prístup k tejto sekcii.');
-    return;
-  }
-  $all('.page').forEach(p=>p.classList.add('hidden'));
-  const el = document.getElementById(page);
-  if(el){ el.classList.remove('hidden'); highlightNav(page); }
-}
-
 function renderHomeFor(user){
   if(user.role === 'manager'){
-    $('#managerControls')?.classList.remove('hidden');
-    $('#kpiTab')?.classList.remove('hidden');
+    document.getElementById('managerControls').classList.remove('hidden');
+    document.getElementById('kpiTab').classList.remove('hidden');
+    document.getElementById('salesGoalCard').classList.add('hidden');
     renderHomeTeam();
   }else{
-    $('#managerControls')?.classList.add('hidden');
-    $('#kpiTab')?.classList.add('hidden');
+    document.getElementById('managerControls').classList.add('hidden');
+    document.getElementById('kpiTab').classList.add('hidden');
     renderHomeSales(user.email);
   }
 }
 function renderHomeTeam(){
   const rev = Object.values(DATA.users).reduce((a,b)=>a+(b.revenue||0),0);
   const orders = Object.values(DATA.users).reduce((a,b)=>a+(b.orders||0),0);
-  $('#weekVal').textContent = '#'+DATA.week;
-  $('#revVal').textContent = rev + ' €';
-  $('#ordersVal').textContent = orders;
+  document.getElementById('weekVal').textContent = '#'+DATA.week;
+  document.getElementById('revVal').textContent = rev + ' €';
+  document.getElementById('ordersVal').textContent = orders;
   renderTeam();
+  renderGoalsTable();
 }
 function renderHomeSales(email){
-  const s = DATA.users[email] || {contacts:0,outreaches:0,meetings:0,offers:0,orders:0,revenue:0};
-  $('#weekVal').textContent = '#'+DATA.week;
-  $('#revVal').textContent = (s.revenue||0) + ' €';
-  $('#ordersVal').textContent = (s.orders||0);
-  $('#teamList').innerHTML = `<div class="card"><strong>${USERS[email].name}</strong><div style="font-size:13px;color:#666">Obrat: ${s.revenue||0} €</div></div>`;
+  const card = document.getElementById('salesGoalCard');
+  card.classList.remove('hidden');
+  const s = DATA.users[email] || {revenue:0};
+  const goal = USERS[email]?.goal ?? null;
+  const rev = s.revenue||0;
+  document.getElementById('weekVal').textContent = '#'+DATA.week;
+  document.getElementById('revVal').textContent = rev + ' €';
+  document.getElementById('ordersVal').textContent = s.orders||0;
+
+  const gEl = document.getElementById('goalVal');
+  const rEl = document.getElementById('revValSales');
+  const pEl = document.getElementById('pctVal');
+  const bar = document.getElementById('progressBar');
+  const hint = document.getElementById('goalHint');
+
+  rEl.textContent = rev;
+  if(goal == null || goal === ''){
+    gEl.textContent = 'nenastavené';
+    pEl.textContent = '—';
+    bar.style.width = '0%';
+    bar.style.background = '#ccc';
+    hint.textContent = 'Cieľ ešte nebol nastavený. Kontaktuj manažéra.';
+  }else{
+    const pct = goal>0 ? Math.round((rev/goal)*100) : 0;
+    gEl.textContent = goal;
+    pEl.textContent = pct + '%';
+    bar.style.width = Math.min(pct, 100) + '%';
+    bar.style.background = pct>=100 ? '#28A745' : (pct>=80 ? '#ff9800' : '#e53935');
+    hint.textContent = pct>=100 ? 'Výborne! Cieľ splnený.' : (pct>=80 ? 'Blížite sa k cieľu.' : 'Zatiaľ pod cieľom. Poďme pridať.');
+  }
 }
+
 function renderKPI(){
-  const tbody = $('#kpiTable'); if(!tbody) return;
+  const tbody = document.getElementById('kpiTable'); if(!tbody) return;
   tbody.innerHTML='';
   Object.keys(USERS).forEach(email=>{
     if(USERS[email].role !== 'sales') return;
     const s = DATA.users[email] || {contacts:0,outreaches:0,meetings:0,offers:0,orders:0,revenue:0};
-    const parts = (USERS[email].name||'').split(' ');
+    const nameFull = USERS[email].name||'';
+    const parts = nameFull.split(' ');
     const fname = parts[0]||'';
     const sname = parts.slice(1).join(' ')||'';
+    const goal = USERS[email]?.goal ?? '';
+    const pct = goal ? Math.round(((s.revenue||0)/goal)*100) : '';
     const commission = ((s.revenue||0)*0.2).toFixed(2);
     const bonus = (s.revenue||0) >= 5000 ? 200 : 0;
     const ok = (s.contacts||0)>=30 && (s.outreaches||0)>=30 && (s.meetings||0)>=10 && (s.offers||0)>=15 && (s.orders||0)>=2;
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${fname}</td><td>${sname}</td><td>${email}</td><td>${s.contacts||0}</td><td>${s.outreaches||0}</td><td>${s.meetings||0}</td><td>${s.offers||0}</td><td>${s.orders||0}</td><td>${s.revenue||0}</td><td>${commission} €</td><td>${bonus} €</td><td style="color:${ok?'green':'red'}">${ok?'Splnené':'Nesplnené'}</td>`;
+    tr.innerHTML = `<td>${fname}</td><td>${sname}</td><td>${email}</td>
+      <td>${s.contacts||0}</td><td>${s.outreaches||0}</td><td>${s.meetings||0}</td><td>${s.offers||0}</td><td>${s.orders||0}</td>
+      <td>${s.revenue||0}</td><td>${goal||''}</td><td>${pct!==''? pct+'%':''}</td>
+      <td>${commission} €</td><td>${bonus} €</td>
+      <td style="color:${ok?'green':'red'}">${ok?'Splnené':'Nesplnené'}</td>`;
     tbody.appendChild(tr);
   });
 }
 function renderTeam(){
-  const box = $('#teamList'); if(!box) return;
+  const box = document.getElementById('teamList'); if(!box) return;
   box.innerHTML='';
   Object.keys(USERS).forEach(email=>{
     if(USERS[email].role !== 'sales') return;
@@ -124,23 +138,44 @@ function renderTeam(){
     box.appendChild(el);
   });
 }
-
 function openProfile(email){
   const s = DATA.users[email] || {revenue:0,contacts:0,meetings:0,offers:0,outreaches:0,orders:0};
-  alert(USERS[email].name + '\\nObrat: ' + (s.revenue||0) + ' €' + '\\nStav KPI: ' + ((s.contacts>=30 && s.outreaches>=30 && s.meetings>=10 && s.offers>=15 && s.orders>=2)? 'Splnené':'Nesplnené'));
+  alert(USERS[email].name + '\nObrat: ' + (s.revenue||0) + ' €' + '\nStav KPI: ' + ((s.contacts>=30 && s.outreaches>=30 && s.meetings>=10 && s.offers>=15 && s.orders>=2)? 'Splnené':'Nesplnené'));
 }
 
-// manager add/import
+function renderGoalsTable(){
+  const tb = document.getElementById('goalsTable'); if(!tb) return;
+  tb.innerHTML='';
+  Object.keys(USERS).forEach(email=>{
+    const u = USERS[email]; if(u.role!=='sales') return;
+    const tr = document.createElement('tr');
+    const val = (u.goal??'') === null ? '' : (u.goal??'');
+    tr.innerHTML = `<td>${u.name}</td><td>${email}</td><td><input type="number" min="0" id="goal_${btoa(email)}" value="${val}"></td><td><button class="smallbtn" data-savegoal="${email}">Uložiť</button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-savegoal]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const email = btn.getAttribute('data-savegoal');
+      const input = document.getElementById('goal_'+btoa(email));
+      const v = input.value.trim();
+      USERS[email].goal = v==='' ? null : Math.max(0, Math.round(+v));
+      saveUsers(USERS);
+      renderKPI();
+      alert('Cieľ uložený.');
+    });
+  });
+}
+
 function addUser(name, email){
   if(USERS[email]) return {ok:false, msg:'Používateľ s týmto e-mailom už existuje'};
-  USERS[email] = { name: name, role: 'sales', pass: DEFAULT_PASS };
+  USERS[email] = { name: name, role: 'sales', pass: DEFAULT_PASS, goal: null };
   saveUsers(USERS);
   if(!DATA.users[email]) DATA.users[email] = {contacts:0,outreaches:0,meetings:0,offers:0,orders:0,revenue:0};
   saveData(DATA);
   return {ok:true};
 }
 function importUsersFromCSV(text){
-  const lines = text.split(/\\r?\\n/).map(l=>l.trim()).filter(Boolean);
+  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
   let added=0, skipped=0;
   for(let i=0;i<lines.length;i++){
     const line = lines[i];
@@ -155,23 +190,23 @@ function importUsersFromCSV(text){
   return {added, skipped};
 }
 
-// report
 function populateSalesSelect(cur){
-  const wrap = $('#reportSalesWrap');
-  const sel  = $('#rSales');
+  const wrap = document.getElementById('reportSalesWrap');
+  const sel = document.getElementById('rSales');
   if(cur.role === 'manager'){
     wrap.classList.remove('hidden');
     sel.innerHTML='';
     Object.keys(USERS).forEach(email=>{
       if(USERS[email].role!=='sales') return;
       const opt = document.createElement('option');
-      opt.value=email; opt.textContent = USERS[email].name + ' ('+email+')';
+      opt.value = email; opt.textContent = USERS[email].name + ' ('+email+')';
       sel.appendChild(opt);
     });
-    sel.disabled=false;
+    sel.disabled = false;
   }else{
     wrap.classList.add('hidden');
-    if(sel) { sel.value = cur.email; sel.disabled=true; }
+    sel.value = cur.email;
+    sel.disabled = true;
   }
 }
 function openReport(){
@@ -183,14 +218,13 @@ function openReport(){
 function closeReport(){ hideModal('reportModal'); }
 function saveReport(){
   const cur = currentUser(); if(!cur) return;
-  const sel = $('#rSales');
-  const who = (cur.role==='manager' && sel && !sel.disabled) ? sel.value : cur.email;
-  const c = +$('#rContacts').value || 0;
-  const o = +$('#rOutreaches').value || 0;
-  const m = +$('#rMeetings').value || 0;
-  const p = +$('#rOffers').value || 0;
-  const ord = +$('#rOrders').value || 0;
-  const rev = +$('#rRevenue').value || 0;
+  const who = (cur.role==='manager') ? document.getElementById('rSales').value : cur.email;
+  const c = +document.getElementById('rContacts').value || 0;
+  const o = +document.getElementById('rOutreaches').value || 0;
+  const m = +document.getElementById('rMeetings').value || 0;
+  const p = +document.getElementById('rOffers').value || 0;
+  const ord = +document.getElementById('rOrders').value || 0;
+  const rev = +document.getElementById('rRevenue').value || 0;
   DATA.users[who] = { contacts:c, outreaches:o, meetings:m, offers:p, orders:ord, revenue:rev };
   saveData(DATA);
   renderKPI(); renderHomeFor(currentUser());
@@ -198,20 +232,22 @@ function saveReport(){
   alert('Report uložený.');
 }
 
-// CSV export
 function exportCSV(){
-  const header = ['Meno','Priezvisko','E-mail','Kontakty','Oslovenia','Stretnutia','Ponuky','Objednávky','Obrat (€)','Provízia','Bonus','KPI'];
+  const header = ['Meno','Priezvisko','E-mail','Kontakty','Oslovenia','Stretnutia','Ponuky','Objednávky','Obrat (€)','Cieľ (€)','% plnenia','Provízia','Bonus','KPI'];
   const rows = [header];
   Object.keys(USERS).forEach(email=>{
     if(USERS[email].role!=='sales') return;
-    const parts = (USERS[email].name||'').split(' ');
+    const nameFull = USERS[email].name||'';
+    const parts = nameFull.split(' ');
     const fname = parts[0]||'';
     const sname = parts.slice(1).join(' ')||'';
     const s = DATA.users[email] || {contacts:0,outreaches:0,meetings:0,offers:0,orders:0,revenue:0};
+    const goal = USERS[email]?.goal ?? '';
+    const pct = goal ? Math.round(((s.revenue||0)/goal)*100) : '';
     const prov = ((s.revenue||0)*0.2).toFixed(2);
     const bonus = (s.revenue||0) >= 5000 ? 200 : 0;
     const kpi = (s.contacts>=30 && s.outreaches>=30 && s.meetings>=10 && s.offers>=15 && s.orders>=2) ? 'Splnené' : 'Nesplnené';
-    rows.push([fname,sname,email,s.contacts||0,s.outreaches||0,s.meetings||0,s.offers||0,s.orders||0,s.revenue||0,prov,bonus,kpi]);
+    rows.push([fname,sname,email,s.contacts||0,s.outreaches||0,s.meetings||0,s.offers||0,s.orders||0,s.revenue||0,goal||'',pct!==''?pct+'%':'',prov,bonus,kpi]);
   });
   const csv = rows.map(r=>r.join(';')).join('\n');
   const fname = `view_reports_Tyden${DATA.week}.csv`;
@@ -220,7 +256,6 @@ function exportCSV(){
   const a = document.createElement('a'); a.href = url; a.download = fname; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-// reset data
 function resetData(){
   if(!confirm('Naozaj chceš vynulovať všetky dáta (ponechá používateľov)?')) return;
   Object.keys(USERS).forEach(email=>{
@@ -232,94 +267,82 @@ function resetData(){
   alert('Dáta boli vynulované.');
 }
 
-// password change
 function openPassModal(){ showModal('passModal'); }
 function closePassModal(){ hideModal('passModal'); }
 function saveNewPassword(){
   const cur = currentUser(); if(!cur) return;
-  const oldP = $('#oldPass').value;
-  const newP = $('#newPass').value;
-  const newP2= $('#newPass2').value;
+  const oldP = document.getElementById('oldPass').value;
+  const newP = document.getElementById('newPass').value;
+  const newP2 = document.getElementById('newPass2').value;
   if(!oldP || !newP || !newP2){ alert('Vyplň všetky polia'); return; }
   if(newP !== newP2){ alert('Nové heslo a potvrdenie sa nezhodujú'); return; }
   if(USERS[cur.email].pass !== oldP){ alert('Aktuálne heslo nie je správne'); return; }
-  USERS[cur.email].pass = newP; saveUsers(USERS);
-  closePassModal(); alert('Heslo zmenené.');
-  $('#oldPass').value=''; $('#newPass').value=''; $('#newPass2').value='';
+  USERS[cur.email].pass = newP;
+  saveUsers(USERS);
+  closePassModal();
+  alert('Heslo zmenené.');
+  document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; document.getElementById('newPass2').value='';
 }
 
-// INIT
 document.addEventListener('DOMContentLoaded', ()=>{
   ensureModalHidden('reportModal');
   ensureModalHidden('passModal');
 
-  // login
-  $('#loginBtn').addEventListener('click', ()=>{
-    const email = $('#loginInput').value.trim();
-    const pass  = $('#passInput').value.trim();
-    const res = login(email, pass);
-    if(!res.ok){ alert(res.msg); return; }
+  document.getElementById('loginBtn').addEventListener('click', ()=>{
+    const email = document.getElementById('loginInput').value.trim();
+    const pass = document.getElementById('passInput').value.trim();
+    const r = login(email, pass);
+    if(!r.ok){ alert(r.msg); return; }
     const cur = currentUser();
-    $('#loginView').classList.add('hidden');
-    $('#dashboardView').classList.remove('hidden');
-    $('#userLabel').textContent = cur.name + ' ('+cur.email+')';
-    $('#logoutBtn').classList.remove('hidden');
-    $('#changePassBtn').classList.remove('hidden');
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('dashboardView').classList.remove('hidden');
+    document.getElementById('userLabel').textContent = cur.name + ' ('+cur.email+')';
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    document.getElementById('changePassBtn').classList.remove('hidden');
     renderKPI(); renderHomeFor(cur); routeTo('home');
   });
 
-  // router (event delegation on nav)
   document.querySelector('nav.nav')?.addEventListener('click', (e)=>{
-    const link = e.target.closest('[data-route]');
-    if(!link) return;
-    e.preventDefault();
-    const route = link.dataset.route;
-    routeTo(route);
+    const link = e.target.closest('[data-route]'); if(!link) return;
+    e.preventDefault(); routeTo(link.dataset.route);
   });
 
-  $('#logoutBtn').addEventListener('click', ()=>logout());
-  $('#changePassBtn').addEventListener('click', ()=>openPassModal());
+  document.getElementById('linkReport').addEventListener('click', (e)=>{ e.preventDefault(); openReport(); });
+  document.getElementById('saveReport').addEventListener('click', ()=>saveReport());
+  document.getElementById('closeReport').addEventListener('click', ()=>closeReport());
 
-  // report
-  $('#linkReport').addEventListener('click', (e)=>{ e.preventDefault(); openReport(); });
-  $('#saveReport').addEventListener('click', ()=>saveReport());
-  $('#closeReport').addEventListener('click', ()=>closeReport());
+  document.getElementById('changePassBtn').addEventListener('click', ()=>openPassModal());
+  document.getElementById('savePassBtn').addEventListener('click', ()=>saveNewPassword());
+  document.getElementById('closePassBtn').addEventListener('click', ()=>closePassModal());
 
-  // pass modal
-  $('#savePassBtn').addEventListener('click', ()=>saveNewPassword());
-  $('#closePassBtn').addEventListener('click', ()=>closePassModal());
-
-  // manager controls
-  $('#addUserBtn')?.addEventListener('click', ()=>{
-    const name = ($('#newName').value||'').trim() + ' ' + ($('#newSurname').value||'').trim();
-    const email= ($('#newEmail').value||'').trim().toLowerCase();
+  document.getElementById('addUserBtn').addEventListener('click', ()=>{
+    const name = (document.getElementById('newName').value||'').trim() + ' ' + (document.getElementById('newSurname').value||'').trim();
+    const email = (document.getElementById('newEmail').value||'').trim().toLowerCase();
     if(!name.trim() || !email){ alert('Vyplň meno a e-mail'); return; }
     const r = addUser(name, email);
     if(!r.ok){ alert(r.msg); return; }
     alert('Obchodník pridaný s heslom view2025');
-    renderTeam(); renderKPI();
-    $('#newName').value=''; $('#newSurname').value=''; $('#newEmail').value='';
+    renderTeam(); renderKPI(); renderGoalsTable();
+    document.getElementById('newName').value=''; document.getElementById('newSurname').value=''; document.getElementById('newEmail').value='';
   });
 
-  $('#importCsvBtn')?.addEventListener('click', ()=>{
-    const input = $('#importCsvInput');
+  document.getElementById('importCsvBtn').addEventListener('click', ()=>{
+    const input = document.getElementById('importCsvInput');
     if(!input.files || !input.files[0]){ alert('Vyber CSV súbor'); return; }
     const file = input.files[0];
     const reader = new FileReader();
     reader.onload = (e)=>{
       const res = importUsersFromCSV(e.target.result);
       alert('Import hotový. Pridaných: '+res.added+', Preskočených: '+res.skipped);
-      renderTeam(); renderKPI();
+      renderTeam(); renderKPI(); renderGoalsTable();
       input.value='';
     };
     reader.readAsText(file, 'utf-8');
   });
 
-  // KPI actions
-  $('#exportCsvBtn')?.addEventListener('click', ()=>exportCSV());
-  $('#resetDataBtn')?.addEventListener('click', ()=>resetData());
+  document.getElementById('exportCsvBtn').addEventListener('click', ()=>exportCSV());
+  document.getElementById('resetDataBtn').addEventListener('click', ()=>resetData());
 
-  // close modals on overlay click + ESC
   ['reportModal','passModal'].forEach(id=>{
     const el = document.getElementById(id);
     if(el){ el.addEventListener('click', (ev)=>{ if(ev.target===el) hideModal(id); }); }
@@ -328,14 +351,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(e.key==='Escape'){ hideModal('reportModal'); hideModal('passModal'); }
   });
 
-  // auto-login
   const cur = currentUser();
   if(cur){
-    $('#loginView').classList.add('hidden');
-    $('#dashboardView').classList.remove('hidden');
-    $('#userLabel').textContent = cur.name + ' ('+cur.email+')';
-    $('#logoutBtn').classList.remove('hidden');
-    $('#changePassBtn').classList.remove('hidden');
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('dashboardView').classList.remove('hidden');
+    document.getElementById('userLabel').textContent = cur.name + ' ('+cur.email+')';
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    document.getElementById('changePassBtn').classList.remove('hidden');
     renderKPI(); renderHomeFor(cur); routeTo('home');
   }
 });
