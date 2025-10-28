@@ -16,6 +16,7 @@
       </div>
       <div class="spacer"></div>
       <div class="nav-right">
+        <button id="changePassBtn" class="btn ghost small hidden">Zmeniť heslo</button>
         <span id="userLabel"></span>
         <button id="logoutBtn" class="btn small hidden">Odhlásiť</button>
       </div>
@@ -35,7 +36,7 @@
       <nav class="nav">
         <ul>
           <li><a href="#" data-route="home">Dashboard</a></li>
-          <li><a href="#" data-route="kpi">KPI prehľad</a></li>
+          <li id="kpiTab"><a href="#" data-route="kpi">KPI prehľad</a></li>
           <li><a href="#" id="linkReport">Nahrať report</a></li>
         </ul>
       </nav>
@@ -45,16 +46,29 @@
         <div class="cards">
           <div class="card small"><div class="card-title">Týždeň</div><div class="card-val" id="weekVal">#44</div></div>
           <div class="card small"><div class="card-title">Celkový obrat</div><div class="card-val" id="revVal">0 €</div></div>
-          <div class="card small"><div class="card-title">Objednávky (tím)</div><div class="card-val" id="ordersVal">0</div></div>
+          <div class="card small"><div class="card-title">Objednávky</div><div class="card-val" id="ordersVal">0</div></div>
         </div>
 
         <div id="managerControls" class="card hidden">
-          <h3>Pridať obchodníka</h3>
-          <div class="field"><label>Meno</label><input id="newName"></div>
-          <div class="field"><label>Priezvisko</label><input id="newSurname"></div>
-          <div class="field"><label>E-mail (priezvisko@viewsk.com)</label><input id="newEmail" placeholder="napr. novak@viewsk.com"></div>
-          <div class="actions"><button id="addUserBtn" class="btn">Pridať obchodníka (heslo view2025)</button></div>
-          <div class="hint">Nový obchodník dostane automaticky heslo <strong>view2025</strong>.</div>
+          <h3>Správa obchodníkov</h3>
+          <div class="grid-2">
+            <div>
+              <div class="field"><label>Meno</label><input id="newName"></div>
+              <div class="field"><label>Priezvisko</label><input id="newSurname"></div>
+              <div class="field"><label>E-mail (priezvisko@viewsk.com)</label><input id="newEmail" placeholder="napr. novak@viewsk.com"></div>
+              <div class="actions"><button id="addUserBtn" class="btn">Pridať obchodníka (heslo view2025)</button></div>
+            </div>
+            <div>
+              <div class="field">
+                <label>Import obchodníkov z CSV (Meno;Priezvisko;E-mail)</label>
+                <input type="file" id="importCsvInput" accept=".csv">
+              </div>
+              <div class="actions">
+                <button id="importCsvBtn" class="btn ghost">Import CSV</button>
+              </div>
+              <div class="hint">Duplicitné e-maily sa preskočia. Heslo = <b>view2025</b>.</div>
+            </div>
+          </div>
         </div>
 
         <h3>Členovia tímu</h3>
@@ -63,9 +77,13 @@
 
       <section id="kpi" class="page hidden">
         <h2>KPI & Výsledky - Týždeň <span id="weekKPI">#44</span></h2>
+        <div class="actions">
+          <button id="exportCsvBtn" class="btn">Exportovať do CSV</button>
+          <button id="resetDataBtn" class="btn ghost">Resetovať dáta</button>
+        </div>
         <div class="card">
           <table class="table">
-            <thead><tr><th>Obchodník</th><th>Kontakty</th><th>Oslovenia</th><th>Stretnutia</th><th>Ponuky</th><th>Objednávky</th><th>Obrat (€)</th><th>Provízia</th><th>Bonus</th><th>KPI</th></tr></thead>
+            <thead><tr><th>Meno</th><th>Priezvisko</th><th>E-mail</th><th>Kontakty</th><th>Oslovenia</th><th>Stretnutia</th><th>Ponuky</th><th>Objednávky</th><th>Obrat (€)</th><th>Provízia</th><th>Bonus</th><th>KPI</th></tr></thead>
             <tbody id="kpiTable"></tbody>
           </table>
         </div>
@@ -73,11 +91,11 @@
     </div>
   </main>
 
-  <!-- Report modal (hidden by default) -->
+  <!-- Report modal -->
   <div id="reportModal" class="hidden modal" aria-hidden="true">
     <div class="modal-card">
       <h3>Týždenný report</h3>
-      <div class="field"><label>Vyber obchodníka</label><select id="rSales"></select></div>
+      <div class="field hidden" id="reportSalesWrap"><label>Vyber obchodníka</label><select id="rSales"></select></div>
       <div class="field"><label>Kontakty</label><input id="rContacts" type="number"></div>
       <div class="field"><label>Oslovenia</label><input id="rOutreaches" type="number"></div>
       <div class="field"><label>Stretnutia</label><input id="rMeetings" type="number"></div>
@@ -88,10 +106,21 @@
     </div>
   </div>
 
+  <!-- Change password modal -->
+  <div id="passModal" class="hidden modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3>Zmeniť heslo</h3>
+      <div class="field"><label>Aktuálne heslo</label><input id="oldPass" type="password"></div>
+      <div class="field"><label>Nové heslo</label><input id="newPass" type="password"></div>
+      <div class="field"><label>Potvrdenie hesla</label><input id="newPass2" type="password"></div>
+      <div class="actions"><button id="savePassBtn" class="btn">Uložiť</button> <button id="closePassBtn" class="btn ghost">Zavrieť</button></div>
+    </div>
+  </div>
+
   <footer class="footer">
     <div class="wrap">© View - interný portál</div>
   </footer>
 
-<script src="script.js?v=6"></script>
+<script src="script.js?v=7"></script>
 </body>
 </html>
