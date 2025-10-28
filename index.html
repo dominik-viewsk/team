@@ -1,1 +1,119 @@
-<!doctype html><html lang='sk'><head><meta charset='utf-8'><title>View Dashboard PRO v2.6</title></head><body><h1>View Team Dashboard PRO v2.6</h1><p>Finálna verzia - obsahuje nový header, funkčné menu, sticky nav a všetky KPI funkcie.</p></body></html>
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>View Team Dashboard PRO v2.6</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-row">
+      <a class="brand" href="#" data-route="dashboard">
+        <img src="viewlogo.png" alt="View logo" class="logo">
+        <span class="brand-title">VIEW</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav" id="mainNav">
+        <a href="#" class="nav-link" data-route="dashboard"><span>Dashboard</span></a>
+        <a href="#" class="nav-link" data-route="reporty"><span>Reporty</span></a>
+        <a href="#" class="nav-link" data-route="ciele"><span>Ciele</span></a>
+        <a href="#" class="nav-link only-manager" data-route="obchodnici"><span>Obchodníci</span></a>
+      </nav>
+      <div class="userbox" id="userBox">
+        <span id="userLabel" class="user-label"></span>
+        <button id="changePassBtn" class="btn ghost small hidden">Zmeniť heslo</button>
+        <button id="logoutBtn" class="btn small hidden">Odhlásiť</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container content">
+    <section id="loginView" class="card login-card">
+      <h2>Prihlásenie</h2>
+      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" value="lukac@viewsk.com"></div>
+      <div class="field"><label>Heslo</label><input id="loginPass" type="password" value="view2025"></div>
+      <div class="actions"><button id="loginBtn" class="btn">Prihlásiť</button></div>
+      <div class="hint">Demo manažér: <b>dominik@viewsk.com</b> / <b>viewadmin2025</b><br>Obchodníci: <b>lukac@viewsk.com</b>, <b>illesova@viewsk.com</b> / <b>view2025</b></div>
+    </section>
+
+    <section id="appView" class="hidden">
+      <section id="route-dashboard" class="route">
+        <h2>Dashboard</h2>
+        <section id="salesView" class="page hidden">
+          <div id="weeklyOverview" class="cards"></div>
+          <div id="goalCard" class="card">
+            <h3>🎯 Plnenie cieľa</h3>
+            <div class="goal-line">
+              <div>Obrat: <span id="revenueVal">0</span> €</div>
+              <div>Cieľ: <span id="goalVal">-</span> €</div>
+              <div>Plnenie: <span id="pctVal">0%</span></div>
+            </div>
+            <div class="progress"><div id="progressBar"></div></div>
+            <div id="goalStatus" class="hint"></div>
+          </div>
+        </section>
+
+        <section id="managerView" class="page hidden">
+          <div id="teamSummary" class="card"></div>
+          <div id="teamKPI" class="cards"></div>
+          <div id="teamGoalCard" class="card"></div>
+          <h3>Obchodníci</h3>
+          <div id="salesList" class="grid"></div>
+        </section>
+      </section>
+
+      <section id="route-reporty" class="route hidden">
+        <h2>Reporty</h2>
+        <div class="card">
+          <p>Odošlite týždenný report. Manažér môže vybrať obchodníka zo zoznamu.</p>
+          <button id="openReportBtn" class="btn">Otvoriť formulár reportu</button>
+        </div>
+      </section>
+
+      <section id="route-ciele" class="route hidden">
+        <h2>Ciele</h2>
+        <div class="card soft">
+          <table class="table">
+            <thead><tr><th>Meno</th><th>E-mail</th><th>Cieľ (€)</th><th>Uložiť</th></tr></thead>
+            <tbody id="goalsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="route-obchodnici" class="route hidden">
+        <h2>Obchodníci</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Pridať obchodníka</h3>
+            <div class="field"><label>Meno</label><input id="newName"></div>
+            <div class="field"><label>Priezvisko</label><input id="newSurname"></div>
+            <div class="field"><label>E-mail (priezvisko@viewsk.com)</label><input id="newEmail" placeholder="napr. novak@viewsk.com"></div>
+            <div class="actions"><button id="addUserBtn" class="btn">Pridať (heslo: view2025)</button></div>
+          </div>
+          <div class="card">
+            <h3>Import/Export</h3>
+            <div class="field">
+              <label>Import CSV (Meno;Priezvisko;E-mail)</label>
+              <input type="file" id="importCsvInput" accept=".csv">
+            </div>
+            <div class="actions">
+              <button id="importCsvBtn" class="btn ghost">Import CSV</button>
+              <button id="exportCsvBtn" class="btn">Export KPI do CSV</button>
+              <button id="resetDataBtn" class="btn ghost">Resetovať dáta</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© View · interný portál</div>
+  </footer>
+
+  <script src="script.js?v=26"></script>
+</body>
+</html>
