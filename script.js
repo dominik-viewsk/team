@@ -286,6 +286,9 @@ function saveNewPassword(){
 
 /* ======= APP BOOT ======= */
 document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('appView').classList.add('hidden');
+document.getElementById('loginView').classList.remove('hidden');
+
   ensureModalHidden('reportModal'); ensureModalHidden('passModal');
 
   // Login
