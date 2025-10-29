@@ -3,16 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v2.6</title>
+  <title>View Team Dashboard PRO v2.6.1</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header">
     <div class="container header-row">
       <a class="brand" href="#" data-route="dashboard">
-  <img src="viewlogo.png" alt="View logo" class="logo">
-</a>
-
+        <img src="viewlogo.png" alt="View logo" class="logo">
+      </a>
       <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -40,73 +39,10 @@
     </section>
 
     <section id="appView" class="hidden">
-      <section id="route-dashboard" class="route">
-        <h2>Dashboard</h2>
-        <section id="salesView" class="page hidden">
-          <div id="weeklyOverview" class="cards"></div>
-          <div id="goalCard" class="card">
-            <h3>🎯 Plnenie cieľa</h3>
-            <div class="goal-line">
-              <div>Obrat: <span id="revenueVal">0</span> €</div>
-              <div>Cieľ: <span id="goalVal">-</span> €</div>
-              <div>Plnenie: <span id="pctVal">0%</span></div>
-            </div>
-            <div class="progress"><div id="progressBar"></div></div>
-            <div id="goalStatus" class="hint"></div>
-          </div>
-        </section>
-
-        <section id="managerView" class="page hidden">
-          <div id="teamSummary" class="card"></div>
-          <div id="teamKPI" class="cards"></div>
-          <div id="teamGoalCard" class="card"></div>
-          <h3>Obchodníci</h3>
-          <div id="salesList" class="grid"></div>
-        </section>
-      </section>
-
-      <section id="route-reporty" class="route hidden">
-        <h2>Reporty</h2>
-        <div class="card">
-          <p>Odošlite týždenný report. Manažér môže vybrať obchodníka zo zoznamu.</p>
-          <button id="openReportBtn" class="btn">Otvoriť formulár reportu</button>
-        </div>
-      </section>
-
-      <section id="route-ciele" class="route hidden">
-        <h2>Ciele</h2>
-        <div class="card soft">
-          <table class="table">
-            <thead><tr><th>Meno</th><th>E-mail</th><th>Cieľ (€)</th><th>Uložiť</th></tr></thead>
-            <tbody id="goalsTable"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="route-obchodnici" class="route hidden">
-        <h2>Obchodníci</h2>
-        <div class="grid-2">
-          <div class="card">
-            <h3>Pridať obchodníka</h3>
-            <div class="field"><label>Meno</label><input id="newName"></div>
-            <div class="field"><label>Priezvisko</label><input id="newSurname"></div>
-            <div class="field"><label>E-mail (priezvisko@viewsk.com)</label><input id="newEmail" placeholder="napr. novak@viewsk.com"></div>
-            <div class="actions"><button id="addUserBtn" class="btn">Pridať (heslo: view2025)</button></div>
-          </div>
-          <div class="card">
-            <h3>Import/Export</h3>
-            <div class="field">
-              <label>Import CSV (Meno;Priezvisko;E-mail)</label>
-              <input type="file" id="importCsvInput" accept=".csv">
-            </div>
-            <div class="actions">
-              <button id="importCsvBtn" class="btn ghost">Import CSV</button>
-              <button id="exportCsvBtn" class="btn">Export KPI do CSV</button>
-              <button id="resetDataBtn" class="btn ghost">Resetovať dáta</button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <section id="route-dashboard" class="route hidden"><h2>Dashboard</h2></section>
+      <section id="route-reporty" class="route hidden"><h2>Reporty</h2></section>
+      <section id="route-ciele" class="route hidden"><h2>Ciele</h2></section>
+      <section id="route-obchodnici" class="route hidden"><h2>Obchodníci</h2></section>
     </section>
   </main>
 
@@ -114,6 +50,6 @@
     <div class="container">© View · interný portál</div>
   </footer>
 
-  <script src="script.js?v=26"></script>
+  <script src="script.js?v=261"></script>
 </body>
 </html>

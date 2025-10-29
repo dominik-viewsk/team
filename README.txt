@@ -1,5 +1,6 @@
-View Team Dashboard PRO v2.6
-
-Obsahuje nový sticky header (ako portal.viewcz.com), funkčné menu, KPI, reporty, export/import, zmena hesla.
-
-Použi pre GitHub Pages: https://dominik-viewsk.github.io/team
+View Team Dashboard PRO v2.6.1
+Opravy:
+- Po načítaní sa zobrazuje len prihlasovacie okno
+- Ostatné sekcie sú skryté do prihlásenia
+- Po prihlásení sa správne načíta Dashboard
+- Odstránený text 'VIEW' pri logu
