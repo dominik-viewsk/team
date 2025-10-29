@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v2.7 BASE</title>
+  <title>View Team Dashboard PRO v2.8-report</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
+  <header class="header hidden" id="appHeader">
     <div class="container header-row">
       <a class="brand" href="#" data-route="dashboard">
         <img src="viewlogo.png" alt="View logo" class="logo">
@@ -29,30 +29,74 @@
   </header>
 
   <main class="container content">
-    <!-- LOGIN ONLY ON LOAD -->
     <section id="loginView" class="card login-card">
       <h2>Prihlásenie</h2>
-      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" value="lukac@viewsk.com"></div>
-      <div class="field"><label>Heslo</label><input id="loginPass" type="password" value="view2025"></div>
+      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" placeholder="vas.email@viewsk.com"></div>
+      <div class="field"><label>Heslo</label><input id="loginPass" type="password" placeholder="••••••••"></div>
       <div class="actions"><button id="loginBtn" class="btn">Prihlásiť</button></div>
-      <div class="hint">Manažér: <b>dominik@viewsk.com</b> / <b>viewadmin2025</b><br>Obchodníci: <b>lukac@viewsk.com</b>, <b>illesova@viewsk.com</b> / <b>view2025</b></div>
     </section>
 
-    <!-- APP HIDDEN UNTIL LOGIN -->
     <section id="appView" class="hidden">
       <section id="route-dashboard" class="route hidden">
         <h2>Dashboard</h2>
         <div class="card" id="welcomeCard">Vitaj späť.</div>
+        <div class="card notice hidden" id="missingReportNotice">Tento týždeň ešte nemáte vyplnený report.</div>
       </section>
 
       <section id="route-reporty" class="route hidden">
         <h2>Reporty</h2>
-        <div class="card">Základ – bez funkcionality (doplníme v ďalšom kroku).</div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Pridať report</h3>
+            <div class="field">
+              <label>Týždeň (číslo a v zátvorke rozsah dátumov)</label>
+              <input id="rWeek" placeholder="napr. 44 (21.–27. októbra)">
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>Počet oslovení</label><input id="rOutreaches" type="number" min="0" value="0"></div>
+              <div class="field"><label>Dohodnuté stretnutia</label><input id="rMeetingsAgreed" type="number" min="0" value="0"></div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>Realizované stretnutia</label><input id="rMeetingsDone" type="number" min="0" value="0"></div>
+              <div class="field"><label>Ponuky</label><input id="rOffers" type="number" min="0" value="0"></div>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>Objednávky</label><input id="rOrders" type="number" min="0" value="0"></div>
+            </div>
+            <div class="actions">
+              <button id="saveReportBtn" class="btn">Uložiť report</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Moje reporty</h3>
+            <table class="table" id="myReportsTable">
+              <thead>
+                <tr>
+                  <th>Týždeň</th><th>Oslovenia</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card only-manager hidden" id="managerReportsWrap">
+          <h3>Reporty tímu</h3>
+          <table class="table table-green" id="allReportsTable">
+            <thead>
+              <tr>
+                <th>Obchodník</th><th>E-mail</th><th>Týždeň</th><th>Osl.</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
 
       <section id="route-ciele" class="route hidden">
         <h2>Ciele</h2>
-        <div class="card">Základ – bez funkcionality (doplníme v ďalšom kroku).</div>
+        <div class="card">Základ – doplníme v ďalšom kroku.</div>
       </section>
 
       <section id="route-obchodnici" class="route hidden">
@@ -62,10 +106,12 @@
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer hidden" id="appFooter">
     <div class="container">© View · interný portál</div>
   </footer>
 
-  <script src="script.js?v=270"></script>
+  <div id="toast" class="toast hidden">✅ Report uložený</div>
+
+  <script src="script.js?v=280"></script>
 </body>
 </html>
