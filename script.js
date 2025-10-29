@@ -290,7 +290,26 @@ document.addEventListener('DOMContentLoaded',()=>{
 document.getElementById('loginView').classList.remove('hidden');
 
   ensureModalHidden('reportModal'); ensureModalHidden('passModal');
+  // --- Enforce initial view: only login or app (never both) ---
+  const curAtStart = currentUser();
+  const loginViewEl = document.getElementById('loginView');
+  const appViewEl   = document.getElementById('appView');
 
+  if (curAtStart) {
+    // už prihlásený: ukáž app, skry login
+    loginViewEl.classList.add('hidden');
+    appViewEl.classList.remove('hidden');
+
+    document.getElementById('userLabel').textContent = curAtStart.name+' ('+curAtStart.email+')';
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    document.getElementById('changePassBtn').classList.remove('hidden');
+    $all('.only-manager').forEach(e=> e.classList.toggle('hidden', curAtStart.role!=='manager'));
+    navigate('dashboard');
+  } else {
+    // neprihlásený: ukáž login, skry app
+    appViewEl.classList.add('hidden');
+    loginViewEl.classList.remove('hidden');
+  }
   // Login
   document.getElementById('loginBtn').addEventListener('click',()=>{
     const email=document.getElementById('loginEmail').value.trim().toLowerCase();
