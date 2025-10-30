@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v2.8-report</title>
+  <title>View Team Dashboard PRO v3.0-goals-summary</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -39,6 +39,38 @@
     <section id="appView" class="hidden">
       <section id="route-dashboard" class="route hidden">
         <h2>Dashboard</h2>
+
+        <div id="managerSummary" class="card only-manager hidden">
+          <h3>Tímový prehľad cieľov</h3>
+          <div class="summary-grid">
+            <div class="circle-wrap">
+              <div id="teamCircle" class="circle"></div>
+              <div class="circle-label">Priemerné plnenie</div>
+            </div>
+            <div class="stats">
+              <div><b>Obchodníci s cieľom:</b> <span id="statUsers">0</span></div>
+              <div><b>Súčet cieľov:</b> <span id="statTargets">0</span> €</div>
+              <div><b>Súčet plnenia:</b> <span id="statActuals">0</span> €</div>
+              <div><b>Priemer tímu:</b> <span id="statAvg">0,0 %</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="myGoalCard" class="card hidden">
+          <h3>Môj cieľ</h3>
+          <div class="summary-grid">
+            <div class="circle-wrap">
+              <div id="myCircle" class="circle"></div>
+              <div class="circle-label">Moje plnenie</div>
+            </div>
+            <div class="stats">
+              <div><b>Cieľ:</b> <span id="myTarget">-</span> €</div>
+              <div><b>Splnené:</b> <span id="myActual">-</span> €</div>
+              <div><b>Percento:</b> <span id="myPct">0,0 %</span></div>
+            </div>
+          </div>
+        </div>
+
         <div class="card" id="welcomeCard">Vitaj späť.</div>
         <div class="card notice hidden" id="missingReportNotice">Tento týždeň ešte nemáte vyplnený report.</div>
       </section>
@@ -63,19 +95,13 @@
             <div class="grid-2">
               <div class="field"><label>Objednávky</label><input id="rOrders" type="number" min="0" value="0"></div>
             </div>
-            <div class="actions">
-              <button id="saveReportBtn" class="btn">Uložiť report</button>
-            </div>
+            <div class="actions"><button id="saveReportBtn" class="btn">Uložiť report</button></div>
           </div>
 
           <div class="card">
             <h3>Moje reporty</h3>
             <table class="table" id="myReportsTable">
-              <thead>
-                <tr>
-                  <th>Týždeň</th><th>Oslovenia</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Týždeň</th><th>Oslovenia</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
@@ -84,11 +110,7 @@
         <div class="card only-manager hidden" id="managerReportsWrap">
           <h3>Reporty tímu</h3>
           <table class="table table-green" id="allReportsTable">
-            <thead>
-              <tr>
-                <th>Obchodník</th><th>E-mail</th><th>Týždeň</th><th>Osl.</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Obchodník</th><th>E-mail</th><th>Týždeň</th><th>Osl.</th><th>Doho.</th><th>Real.</th><th>Ponuky</th><th>Objednávky</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -96,12 +118,34 @@
 
       <section id="route-ciele" class="route hidden">
         <h2>Ciele</h2>
-        <div class="card">Základ – doplníme v ďalšom kroku.</div>
+        <div id="managerGoals" class="only-manager hidden">
+          <div class="card">
+            <h3>Nastavenie cieľov</h3>
+            <table class="table table-green" id="goalsTable">
+              <thead><tr><th>Obchodník</th><th>Cieľ (€)</th><th>Plnenie (€)</th><th>%</th><th>Plnenie (kruh)</th><th>Uložiť</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="salesGoal" class="card hidden">
+          <h3>Môj cieľ</h3>
+          <div class="summary-grid">
+            <div class="circle-wrap">
+              <div id="salesCircle" class="circle"></div>
+              <div class="circle-label">Moje plnenie</div>
+            </div>
+            <div class="stats">
+              <div><b>Cieľ:</b> <span id="sgTarget">-</span> €</div>
+              <div><b>Splnené:</b> <span id="sgActual">-</span> €</div>
+              <div><b>Percento:</b> <span id="sgPct">0,0 %</span></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="route-obchodnici" class="route hidden">
         <h2>Obchodníci</h2>
-        <div class="card">Základ – len pre manažéra (doplníme v ďalšom kroku).</div>
+        <div class="card">Správa obchodníkov bude doplnená v ďalšom kroku.</div>
       </section>
     </section>
   </main>
@@ -110,8 +154,8 @@
     <div class="container">© View · interný portál</div>
   </footer>
 
-  <div id="toast" class="toast hidden">✅ Report uložený</div>
+  <div id="toast" class="toast hidden">✅ Uložené</div>
 
-  <script src="script.js?v=280"></script>
+  <script src="script.js?v=300"></script>
 </body>
 </html>
