@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v3.0-goals-summary</title>
+  <title>View Team Dashboard PRO v3.2 – Goals Manager</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +21,7 @@
         <a href="#" class="nav-link" data-route="ciele"><span>Ciele</span></a>
         <a href="#" class="nav-link only-manager" data-route="obchodnici"><span>Obchodníci</span></a>
       </nav>
-      <div class="userbox" id="userBox">
+      <div class="userbox">
         <span id="userLabel" class="user-label"></span>
         <button id="logoutBtn" class="btn small hidden">Odhlásiť</button>
       </div>
@@ -39,7 +39,6 @@
     <section id="appView" class="hidden">
       <section id="route-dashboard" class="route hidden">
         <h2>Dashboard</h2>
-
         <div id="managerSummary" class="card only-manager hidden">
           <h3>Tímový prehľad cieľov</h3>
           <div class="summary-grid">
@@ -55,7 +54,6 @@
             </div>
           </div>
         </div>
-
         <div id="myGoalCard" class="card hidden">
           <h3>Môj cieľ</h3>
           <div class="summary-grid">
@@ -70,7 +68,6 @@
             </div>
           </div>
         </div>
-
         <div class="card" id="welcomeCard">Vitaj späť.</div>
         <div class="card notice hidden" id="missingReportNotice">Tento týždeň ešte nemáte vyplnený report.</div>
       </section>
@@ -97,7 +94,6 @@
             </div>
             <div class="actions"><button id="saveReportBtn" class="btn">Uložiť report</button></div>
           </div>
-
           <div class="card">
             <h3>Moje reporty</h3>
             <table class="table" id="myReportsTable">
@@ -106,7 +102,6 @@
             </table>
           </div>
         </div>
-
         <div class="card only-manager hidden" id="managerReportsWrap">
           <h3>Reporty tímu</h3>
           <table class="table table-green" id="allReportsTable">
@@ -118,11 +113,28 @@
 
       <section id="route-ciele" class="route hidden">
         <h2>Ciele</h2>
+        <div id="addGoalCard" class="card only-manager hidden">
+          <h3>Pridať alebo upraviť cieľ</h3>
+          <div class="grid-2">
+            <div class="field">
+              <label>Obchodník</label>
+              <select id="goalUser">
+                <option value="lukac@viewsk.com">Róbert Lukáč (lukac@viewsk.com)</option>
+                <option value="illesova@viewsk.com">Martina Illesová (illesova@viewsk.com)</option>
+              </select>
+            </div>
+            <div class="field"><label>Cieľ (€)</label><input id="goalTarget" type="number" min="0" step="100" value="5000"></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Plnenie (€)</label><input id="goalActual" type="number" min="0" step="100" value="0"></div>
+            <div class="actions align-end"><button id="saveGoalBtn" class="btn">Uložiť cieľ</button></div>
+          </div>
+        </div>
         <div id="managerGoals" class="only-manager hidden">
           <div class="card">
-            <h3>Nastavenie cieľov</h3>
+            <h3>Nastavené ciele</h3>
             <table class="table table-green" id="goalsTable">
-              <thead><tr><th>Obchodník</th><th>Cieľ (€)</th><th>Plnenie (€)</th><th>%</th><th>Plnenie (kruh)</th><th>Uložiť</th></tr></thead>
+              <thead><tr><th>Obchodník</th><th>Cieľ (€)</th><th>Plnenie (€)</th><th>%</th><th>Plnenie (kruh)</th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
@@ -156,6 +168,6 @@
 
   <div id="toast" class="toast hidden">✅ Uložené</div>
 
-  <script src="script.js?v=300"></script>
+  <script src="script.js?v=320"></script>
 </body>
 </html>

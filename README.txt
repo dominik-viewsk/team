@@ -1,17 +1,15 @@
-View Team Dashboard PRO v3.0-goals-summary
-=======================================
+View Team Dashboard PRO v3.2 – Goals Manager
+=============================================
 Novinky:
-- Kruhové progress bary (SVG) s jedným desatinným miestom a farbami podľa plnenia.
-- Dashboard manažéra: priemerné plnenie tímu, počet obchodníkov s cieľom, súčet cieľov a plnenia.
-- Dashboard obchodníka: vlastný kruhový progress + hodnoty cieľ/splnené.
-- Sekcia Ciele: manažér môže nastavovať ciele a plnenie pre každého; mini kruhové progressy v tabuľke.
-- Zachované Reporty (z v2.8) – ukladanie do localStorage, tabuľka tímu pre manažéra.
-- Pred loginom je skrytý header/menu/footer.
+- Opravená navigácia medzi sekciami (Dashboard / Reporty / Ciele / Obchodníci).
+- Karta „Pridať alebo upraviť cieľ“ (len manažér) v sekcii Ciele – uloženie do localStorage.
+- Automatický refresh grafov (dashboard + ciele) po uložení cieľa.
+- Zachované Reporty (týždeň, oslovenia, dohodnuté/realizované stretnutia, ponuky, objednávky).
 
-Prihlásenia (demo):
-- Manažér: dominik@viewsk.com / viewadmin2025
-- Obchodníci: lukac@viewsk.com, illesova@viewsk.com / view2025
+Poznámky:
+- Logo `viewlogo.png` ostáva pôvodné (ZIP ho neobsahuje).
+- Demo login: manažér `dominik@viewsk.com` / `viewadmin2025`; obchodníci `lukac@viewsk.com`, `illesova@viewsk.com` / `view2025`.
 
 Nasadenie:
-1) Rozbaľ ZIP do repozitára GitHub Pages (dominik-viewsk/team).
-2) Otvor https://dominik-viewsk.github.io/team a stlač Ctrl+Shift+R.
+1) Nahraj súbory do GitHub Pages repa (dominik-viewsk/team).
+2) Otvor stránku a obnov (Ctrl+Shift+R).
