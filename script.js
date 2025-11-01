@@ -141,16 +141,38 @@ function renderDashboard(){
 $('#myGoalCard').classList.add('hidden');
 
 
-    // Mesačný súhrn
-    renderMonthlySummary();
-  }else{
-    const g=goals[cur.email]||{target:0,actual:0}; const p=percent(+g.actual||0,+g.target||0);
-    $('#myTarget').textContent=(+g.target||0).toLocaleString('sk-SK');
-    $('#myActual').textContent=(+g.actual||0).toLocaleString('sk-SK');
-    $('#myPct').textContent=pctText(p);
-    renderCircle($('#myCircle'),isFinite(p)?Math.max(0,Math.min(200,p)):0);
-    $('#myGoalCard').classList.remove('hidden'); $('#managerTopSummary').classList.remove('hidden'); $('#monthlySummaryCard').classList.add('hidden');
-  }
+    function renderWeeklySummary() {
+  const reports = getReports();
+  const now = new Date();
+  const thisWeek = getISOWeek(now);
+  const lastWeek = thisWeek - 1; // minulý týždeň
+
+  const sum = { outreaches: 0, meetingsAgreed: 0, meetingsDone: 0, offers: 0, orders: 0 };
+
+  // Prejdi všetky reporty všetkých obchodníkov
+  Object.values(reports).forEach(userReports => {
+    Object.entries(userReports).forEach(([week, rep]) => {
+      if (parseInt(week, 10) === lastWeek) {
+        sum.outreaches += +rep.outreaches || 0;
+        sum.meetingsAgreed += +rep.meetingsAgreed || 0;
+        sum.meetingsDone += +rep.meetingsDone || 0;
+        sum.offers += +rep.offers || 0;
+        sum.orders += +rep.orders || 0;
+      }
+    });
+  });
+
+  const tb = document.querySelector('#monthlySummaryTable tbody');
+  tb.innerHTML = `
+    <tr><td>Oslovenia</td><td>${sum.outreaches}</td></tr>
+    <tr><td>Dohodnuté stretnutia</td><td>${sum.meetingsAgreed}</td></tr>
+    <tr><td>Realizované stretnutia</td><td>${sum.meetingsDone}</td></tr>
+    <tr><td>Ponuky</td><td>${sum.offers}</td></tr>
+    <tr><td>Objednávky</td><td>${sum.orders}</td></tr>
+  `;
+  document.querySelector('#monthlySummaryCard').classList.remove('hidden');
+}
+
 }
 function renderGoalsPage(){
   const cur=currentUser(); if(!cur) return;
