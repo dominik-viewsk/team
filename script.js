@@ -137,7 +137,7 @@ function renderDashboard(){
     $('#statActuals').textContent=(Math.round(sumA*10)/10).toLocaleString('sk-SK');
     $('#statAvg').textContent=pctText(avg);
     renderCircle($('#teamCircle'), isFinite(avg)? Math.max(0,Math.min(200,avg)) : 0);
-    $('#managerTopGrid').classList.remove('hidden');
+    $$('#managerTopGrid').classList.remove('hidden');
 $('#myGoalCard').classList.add('hidden');
 
 
