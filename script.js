@@ -131,28 +131,80 @@ function saveReport(){
 function renderDashboard(){
   const cur=currentUser(); if(!cur) return;
   const goals=getGoals(); const users=getUsers();
-  if(cur.role==='manager'){
-    let usersWith=0, sumT=0, sumA=0;
-    Object.keys(users).forEach(email=>{
-      if(users[email].role!=='sales') return;
-      const g=goals[email]; if(!g||(!g.target&&!g.actual)) return;
-      usersWith++; sumT+=(+g.target||0); sumA+=(+g.actual||0);
+  function renderDashboard() {
+  const cur = currentUser();
+  if (!cur) return;
+
+  const goals = getGoals();
+  const users = getUsers();
+
+  if (cur.role === 'manager') {
+    // ---- Súhrn cieľov tímu ----
+    let usersWith = 0, sumT = 0, sumA = 0;
+    Object.keys(users).forEach(email => {
+      if (users[email].role !== 'sales') return;
+      const g = goals[email];
+      if (!g || (!g.target && !g.actual)) return;
+      usersWith++;
+      sumT += (+g.target || 0);
+      sumA += (+g.actual || 0);
     });
-    const avg= usersWith && sumT>0 ? (sumA/sumT*100) : 0;
-    $('#statUsers').textContent=usersWith;
-    $('#statTargets').textContent=(Math.round(sumT*10)/10).toLocaleString('sk-SK');
-    $('#statActuals').textContent=(Math.round(sumA*10)/10).toLocaleString('sk-SK');
-    $('#statAvg').textContent=pctText(avg);
-    renderCircle($('#teamCircle'), isFinite(avg)? Math.max(0,Math.min(200,avg)) : 0);
-    $('#managerSummary').classList.remove('hidden'); $('#myGoalCard').classList.add('hidden');
-  }else{
-    const g=goals[cur.email]||{target:0,actual:0}; const p=percent(+g.actual||0, +g.target||0);
-    $('#myTarget').textContent=(+g.target||0).toLocaleString('sk-SK');
-    $('#myActual').textContent=(+g.actual||0).toLocaleString('sk-SK');
-    $('#myPct').textContent=pctText(p);
-    renderCircle($('#myCircle'), isFinite(p)? Math.max(0,Math.min(200,p)) : 0);
-    $('#myGoalCard').classList.remove('hidden'); $('#managerSummary').classList.add('hidden');
+
+    const avg = usersWith && sumT > 0 ? (sumA / sumT * 100) : 0;
+    $('#statUsers').textContent = usersWith;
+    $('#statTargets').textContent = (Math.round(sumT * 10) / 10).toLocaleString('sk-SK');
+    $('#statActuals').textContent = (Math.round(sumA * 10) / 10).toLocaleString('sk-SK');
+    $('#statAvg').textContent = pctText(avg);
+    renderCircle($('#teamCircle'), isFinite(avg) ? Math.max(0, Math.min(200, avg)) : 0);
+
+    $('#managerSummary').classList.remove('hidden');
+    $('#myGoalCard').classList.add('hidden');
+
+    // ---- Nový mesačný súhrn ----
+    renderMonthlySummary();
+  } else {
+    // ---- Dashboard obchodníka ----
+    const g = goals[cur.email] || { target: 0, actual: 0 };
+    const p = percent(+g.actual || 0, +g.target || 0);
+    $('#myTarget').textContent = (+g.target || 0).toLocaleString('sk-SK');
+    $('#myActual').textContent = (+g.actual || 0).toLocaleString('sk-SK');
+    $('#myPct').textContent = pctText(p);
+    renderCircle($('#myCircle'), isFinite(p) ? Math.max(0, Math.min(200, p)) : 0);
+
+    $('#myGoalCard').classList.remove('hidden');
+    $('#managerSummary').classList.add('hidden');
+    $('#monthlySummaryCard').classList.add('hidden');
   }
+}
+function renderMonthlySummary() {
+  const reports = getReports();
+  const summary = {
+    outreaches: 0,
+    meetingsAgreed: 0,
+    meetingsDone: 0,
+    offers: 0,
+    orders: 0
+  };
+
+  Object.values(reports).forEach(userReports => {
+    Object.values(userReports).forEach(rep => {
+      summary.outreaches += +rep.outreaches || 0;
+      summary.meetingsAgreed += +rep.meetingsAgreed || 0;
+      summary.meetingsDone += +rep.meetingsDone || 0;
+      summary.offers += +rep.offers || 0;
+      summary.orders += +rep.orders || 0;
+    });
+  });
+
+  const table = document.querySelector('#monthlySummaryTable tbody');
+  table.innerHTML = `
+    <tr><td>Oslovenia</td><td>${summary.outreaches}</td></tr>
+    <tr><td>Dohodnuté stretnutia</td><td>${summary.meetingsAgreed}</td></tr>
+    <tr><td>Realizované stretnutia</td><td>${summary.meetingsDone}</td></tr>
+    <tr><td>Ponuky</td><td>${summary.offers}</td></tr>
+    <tr><td>Objednávky</td><td>${summary.orders}</td></tr>
+  `;
+  document.querySelector('#monthlySummaryCard').classList.remove('hidden');
 }
 function renderGoalsPage(){
   const cur=currentUser(); if(!cur) return;
