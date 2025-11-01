@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v3.3 – Správa obchodníkov</title>
+  <title>View Team Dashboard PRO v3.6 – Mesačný súhrn</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -39,15 +39,7 @@
     <section id="appView" class="hidden">
       <section id="route-dashboard" class="route hidden">
         <h2>Dashboard</h2>
-        <div id="monthlySummaryCard" class="card only-manager hidden">
-  <h3>Aktivity za aktuálny mesiac</h3>
-  <table class="table table-green" id="monthlySummaryTable">
-    <thead>
-      <tr><th>Aktivita</th><th>Počet</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
+
         <div id="managerSummary" class="card only-manager hidden">
           <h3>Tímový prehľad cieľov</h3>
           <div class="summary-grid">
@@ -63,6 +55,7 @@
             </div>
           </div>
         </div>
+
         <div id="myGoalCard" class="card hidden">
           <h3>Môj cieľ</h3>
           <div class="summary-grid">
@@ -77,8 +70,21 @@
             </div>
           </div>
         </div>
+
         <div class="card" id="welcomeCard">Vitaj späť.</div>
-        <div class="card notice hidden" id="missingReportNotice">Tento týždeň ešte nemáte vyplnený report.</div>
+
+        <div class="card notice hidden" id="missingReportNotice">
+          Tento týždeň ešte nemáte vyplnený report.
+          <a href="#" id="addReportLink" class="link-green" style="margin-left:6px;">Pridať report</a>
+        </div>
+
+        <div id="monthlySummaryCard" class="card only-manager hidden">
+          <h3>Aktivity za aktuálny mesiac</h3>
+          <table class="table table-green" id="monthlySummaryTable">
+            <thead><tr><th>Aktivita</th><th>Počet</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
 
       <section id="route-reporty" class="route hidden">
@@ -103,6 +109,7 @@
             </div>
             <div class="actions"><button id="saveReportBtn" class="btn">Uložiť report</button></div>
           </div>
+
           <div class="card">
             <h3>Moje reporty</h3>
             <table class="table" id="myReportsTable">
@@ -111,6 +118,7 @@
             </table>
           </div>
         </div>
+
         <div class="card only-manager hidden" id="managerReportsWrap">
           <h3>Reporty tímu</h3>
           <table class="table table-green" id="allReportsTable">
@@ -140,7 +148,7 @@
 
         <div id="managerGoals" class="only-manager hidden">
           <div class="card">
-            <h3>Nastavené ciele</h3>
+            <h3>Nastavené cieľe</h3>
             <table class="table table-green" id="goalsTable">
               <thead><tr><th>Obchodník</th><th>Cieľ (€)</th><th>Plnenie (€)</th><th>%</th><th>Plnenie (kruh)</th></tr></thead>
               <tbody></tbody>
@@ -205,6 +213,6 @@
 
   <div id="toast" class="toast hidden">✅ Uložené</div>
 
-  <script src="script.js?v=330"></script>
+  <script src="script.js?v=360"></script>
 </body>
 </html>

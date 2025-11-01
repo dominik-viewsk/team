@@ -26,6 +26,8 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#fff;color:var(--tex
 .table-green th{background:#ecf9f0;border-bottom:1px solid var(--green)}
 .table-green tr.highlight{background:var(--rowhi)}
 .notice{background:#fffbe6;border:1px solid #ffe58f}
+.link-green{color:var(--green);font-weight:500;text-decoration:none}
+.link-green:hover{text-decoration:underline}
 .footer{padding:16px 0;border-top:1px solid var(--border);color:#666;font-size:13px;text-align:center}
 .hamburger{display:none;flex-direction:column;gap:5px;background:transparent;border:none;padding:8px;cursor:pointer}
 .hamburger span{display:block;width:22px;height:2px;background:var(--text);transition:transform .2s ease, opacity .2s ease}
@@ -40,15 +42,3 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#fff;color:var(--tex
 .circle-label{font-size:12px;color:#666;margin-top:6px}
 .actions.align-end{display:flex;align-items:flex-end;justify-content:flex-end}
 @media(max-width:900px){.nav{display:none;position:absolute;top:64px;left:0;right:0;background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;flex-direction:column;gap:8px}.nav.show{display:flex}.hamburger{display:flex}.grid-2{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr}}
-.link-green {
-  color: var(--green);
-  font-weight: 500;
-  text-decoration: none;
-}
-.link-green:hover {
-  text-decoration: underline;
-}
-#monthlySummaryCard table td:first-child {
-  font-weight: 500;
-  text-align: left;
-}

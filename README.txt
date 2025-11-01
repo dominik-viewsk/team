@@ -1,22 +1,25 @@
-View Team Dashboard PRO v3.3 – Správa obchodníkov
-=================================================
+View Team Dashboard PRO v3.6 – Mesačný súhrn + Add‑report link
+=================================================================
 Novinky:
-- Sekcia „Obchodníci“ (len pre manažéra): pridávanie, úprava, mazanie používateľov.
-- Ukladanie používateľov do localStorage (kľúč v33_users). Štart s demo dátami.
-- Prehľad: meno, e-mail, rola, počet reportov, info o cieľoch.
-- Synchronizácia: pri zmazaní používateľa sa zmažú aj jeho reporty a ciele.
-- Navigácia a login fungujú bez reloadu, menu skryté pred prihlásením.
+- Klikateľný odkaz „Pridať report“ priamo v upozornení na dashboarde.
+- Manažérsky dashboard obsahuje „Aktivity za aktuálny mesiac“.
+  - Súčet: oslovenia, dohodnuté stretnutia, realizované stretnutia, ponuky, objednávky.
+  - Filtrovanie podľa mesiaca funguje pre reporty uložené od verzie 3.6 (pole savedAt).
+  - Staršie reporty bez dátumu sa do súhrnu zarátajú (spätná kompatibilita).
+- Zachované: správa obchodníkov, ciele, reporty, login a navigácia.
+- Ukladanie výhradne v localStorage (offline, bez backendu).
 
-Súbory v ZIPe:
+Súbory:
 - index.html
 - style.css
 - script.js
 - README.txt
 
-Login (demo):
+Demo prístupy (nezabudni zmeniť v produkcii):
 - manažér: dominik@viewsk.com / viewadmin2025
 - obchodníci: lukac@viewsk.com, illesova@viewsk.com / view2025
 
 Nasadenie:
-1) Rozbaľ do GitHub Pages repa (dominik-viewsk/team).
-2) Otvor stránku a obnov (Ctrl+Shift+R).
+1) Nahraj súbory do GitHub Pages (dominik-viewsk/team).
+2) Na stránke stlač Ctrl+Shift+R (tvrdý refresh).
+3) Logo viewlogo.png ponechaj pôvodné v koreňovom priečinku repozitára.
