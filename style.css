@@ -48,3 +48,7 @@ body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#fff;color:var(--tex
 .link-green:hover {
   text-decoration: underline;
 }
+#monthlySummaryCard table td:first-child {
+  font-weight: 500;
+  text-align: left;
+}
