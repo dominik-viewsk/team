@@ -1,12 +1,12 @@
-// v3.6 – Mesačný súhrn + 'Pridať report' odkaz + správa obchodníkov
+// v3.8 – Týždenný súhrn + predvyplnený login manažéra + fix navigácie
 const DEFAULT_USERS={
   'dominik@viewsk.com':{name:'Martin Dominik',role:'manager',pass:'viewadmin2025'},
   'lukac@viewsk.com':{name:'Róbert Lukáč',role:'sales',pass:'view2025'},
   'illesova@viewsk.com':{name:'Martina Illesová',role:'sales',pass:'view2025'}
 };
-const USERS_KEY='v33_users';
-const REPORTS_KEY='v28_reports';
-const GOALS_KEY='v30_goals';
+const USERS_KEY='v38_users';
+const REPORTS_KEY='v38_reports';
+const GOALS_KEY='v38_goals';
 
 function $(s){return document.querySelector(s)};function $all(s){return Array.from(document.querySelectorAll(s))}
 
@@ -53,7 +53,7 @@ function renderCircle(el, p){
 }
 function renderMiniCircle(el, p){
   const size=80, r=30, cX=40, cY=40; const circ=2*Math.PI*r; const dash=Math.max(0, Math.min(circ, circ*(p/100)));
-  el.innerHTML=`<svg width="${size}" height="${size}" viewBox="0 0 80 80">
+  el.innerHTML=`<svg width="80" height="80" viewBox="0 0 80 80">
     <circle cx="${cX}" cy="${cY}" r="${r}" fill="none" stroke="#eee" stroke-width="10"/>
     <circle cx="${cX}" cy="${cY}" r="${r}" fill="none" stroke="${pctColor(p)}" stroke-width="10" stroke-linecap="round" transform="rotate(-90 ${cX} ${cY})"
             stroke-dasharray="${dash} ${circ-dash}"/>
@@ -74,8 +74,30 @@ function showRoute(route){
   if(route==='obchodnici') renderUsersPage();
 }
 
+// ===== Week helpers =====
+function getISOWeek(date=new Date()){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day);
+  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  const week=Math.ceil((((d-yearStart)/86400000)+1)/7);
+  return week;
+}
+function getISOWeekYear(date=new Date()){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day);
+  return d.getUTCFullYear();
+}
+function getLastISOWeekInfo(date=new Date()){
+  const thisWeek=getISOWeek(date); const thisYear=getISOWeekYear(date);
+  let lastWeek=thisWeek-1, lastYear=thisYear;
+  if(thisWeek===1){
+    const dec28=new Date(Date.UTC(thisYear-1,11,28));
+    lastWeek=getISOWeek(dec28); lastYear=getISOWeekYear(dec28);
+  }
+  return {week:lastWeek, year:lastYear};
+}
+
 // ===== Reports helpers =====
-function getISOWeek(d=new Date()){ d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const n=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-n); const y=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-y)/86400000)+1)/7) }
 function getWeekRangeString(t=new Date()){ const d=new Date(t),n=d.getDay()||7,m=new Date(d); m.setDate(d.getDate()-(n-1)); const s=new Date(m); s.setDate(m.getDate()+6); const M=['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra']; const f=x=>`${x.getDate()}. ${M[x.getMonth()]}`; return `${f(m)} – ${f(s)}` }
 function checkMissingReport(email,weekNum){
   const data=getReports(); const has=data[email] && data[email][String(weekNum)];
@@ -120,7 +142,7 @@ function saveReport(){
   saveReports(data); renderMyReports(); renderAllReports(); checkMissingReport(cur.email, getISOWeek()); showToast('✅ Report uložený');
 }
 
-// ===== Goals =====
+// ===== Goals & Dashboard =====
 function renderDashboard(){
   const cur=currentUser(); if(!cur) return;
   const goals=getGoals(); const users=getUsers();
@@ -137,42 +159,20 @@ function renderDashboard(){
     $('#statActuals').textContent=(Math.round(sumA*10)/10).toLocaleString('sk-SK');
     $('#statAvg').textContent=pctText(avg);
     renderCircle($('#teamCircle'), isFinite(avg)? Math.max(0,Math.min(200,avg)) : 0);
-    $$('#managerTopGrid').classList.remove('hidden');
-$('#myGoalCard').classList.add('hidden');
 
+    $('#managerTopGrid').classList.remove('hidden');
+    $('#myGoalCard').classList.add('hidden');
 
-    function renderWeeklySummary() {
-  const reports = getReports();
-  const now = new Date();
-  const thisWeek = getISOWeek(now);
-  const lastWeek = thisWeek - 1; // minulý týždeň
-
-  const sum = { outreaches: 0, meetingsAgreed: 0, meetingsDone: 0, offers: 0, orders: 0 };
-
-  // Prejdi všetky reporty všetkých obchodníkov
-  Object.values(reports).forEach(userReports => {
-    Object.entries(userReports).forEach(([week, rep]) => {
-      if (parseInt(week, 10) === lastWeek) {
-        sum.outreaches += +rep.outreaches || 0;
-        sum.meetingsAgreed += +rep.meetingsAgreed || 0;
-        sum.meetingsDone += +rep.meetingsDone || 0;
-        sum.offers += +rep.offers || 0;
-        sum.orders += +rep.orders || 0;
-      }
-    });
-  });
-
-  const tb = document.querySelector('#monthlySummaryTable tbody');
-  tb.innerHTML = `
-    <tr><td>Oslovenia</td><td>${sum.outreaches}</td></tr>
-    <tr><td>Dohodnuté stretnutia</td><td>${sum.meetingsAgreed}</td></tr>
-    <tr><td>Realizované stretnutia</td><td>${sum.meetingsDone}</td></tr>
-    <tr><td>Ponuky</td><td>${sum.offers}</td></tr>
-    <tr><td>Objednávky</td><td>${sum.orders}</td></tr>
-  `;
-  document.querySelector('#monthlySummaryCard').classList.remove('hidden');
-}
-
+    // Týždenný súhrn
+    renderWeeklySummary();
+  }else{
+    const g=goals[cur.email]||{target:0,actual:0}; const p=percent(+g.actual||0,+g.target||0);
+    $('#myTarget').textContent=(+g.target||0).toLocaleString('sk-SK');
+    $('#myActual').textContent=(+g.actual||0).toLocaleString('sk-SK');
+    $('#myPct').textContent=pctText(p);
+    renderCircle($('#myCircle'),isFinite(p)?Math.max(0,Math.min(200,p)):0);
+    $('#myGoalCard').classList.remove('hidden'); $('#managerTopGrid').classList.add('hidden');
+  }
 }
 function renderGoalsPage(){
   const cur=currentUser(); if(!cur) return;
@@ -260,30 +260,38 @@ function addOrUpdateUser(){
   showToast('✅ Používateľ uložený'); clearUserForm(); renderUsersPage();
 }
 
-// ===== Monthly summary =====
-function isSameMonth(d, y, m){
-  const dt = new Date(d);
-  return dt.getFullYear()===y && dt.getMonth()===m;
-}
-function renderMonthlySummary(){
-  const now=new Date(); const month=now.getMonth(); const year=now.getFullYear();
+// ===== Weekly summary (last week across year boundary) =====
+function renderWeeklySummary(){
   const reports=getReports();
+  const last=getLastISOWeekInfo(new Date()); // {week, year}
   const sum={outreaches:0, meetingsAgreed:0, meetingsDone:0, offers:0, orders:0};
 
   Object.values(reports).forEach(userReports=>{
-    Object.values(userReports).forEach(rep=>{
+    Object.entries(userReports).forEach(([weekKey, rep])=>{
+      const wk=parseInt(weekKey,10);
       if(rep.savedAt){
-        if(!isSameMonth(rep.savedAt, year, month)) return;
+        const d=new Date(rep.savedAt);
+        const wy=getISOWeekYear(d), ww=getISOWeek(d);
+        if(ww===last.week && wy===last.year){
+          sum.outreaches += +rep.outreaches || 0;
+          sum.meetingsAgreed += +rep.meetingsAgreed || 0;
+          sum.meetingsDone += +rep.meetingsDone || 0;
+          sum.offers += +rep.offers || 0;
+          sum.orders += +rep.orders || 0;
+        }
+      }else{
+        if(wk===last.week){
+          sum.outreaches += +rep.outreaches || 0;
+          sum.meetingsAgreed += +rep.meetingsAgreed || 0;
+          sum.meetingsDone += +rep.meetingsDone || 0;
+          sum.offers += +rep.offers || 0;
+          sum.orders += +rep.orders || 0;
+        }
       }
-      sum.outreaches += +rep.outreaches || 0;
-      sum.meetingsAgreed += +rep.meetingsAgreed || 0;
-      sum.meetingsDone += +rep.meetingsDone || 0;
-      sum.offers += +rep.offers || 0;
-      sum.orders += +rep.orders || 0;
     });
   });
 
-  const tb=$('#monthlySummaryTable tbody');
+  const tb=$('#weeklySummaryTable tbody');
   tb.innerHTML=`
     <tr><td>Oslovenia</td><td>${sum.outreaches}</td></tr>
     <tr><td>Dohodnuté stretnutia</td><td>${sum.meetingsAgreed}</td></tr>
@@ -291,7 +299,7 @@ function renderMonthlySummary(){
     <tr><td>Ponuky</td><td>${sum.offers}</td></tr>
     <tr><td>Objednávky</td><td>${sum.orders}</td></tr>
   `;
-  $('#monthlySummaryCard').classList.remove('hidden');
+  $('#weeklySummaryCard').classList.remove('hidden');
 }
 
 // ===== Boot =====
@@ -305,10 +313,17 @@ function bootSignedInUI(){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Predvyplniť prihlasovacie údaje manažéra
+  const em=$('#loginEmail'), pw=$('#loginPass');
+  if(em) em.value='dominik@viewsk.com';
+  if(pw) pw.value='viewadmin2025';
+
+  // Pred loginom skryť app
   $('#appHeader').classList.add('hidden'); $('#appFooter').classList.add('hidden'); $('#appView').classList.add('hidden'); $('#loginView').classList.remove('hidden');
 
   if(currentUser()) bootSignedInUI();
 
+  // login/logout
   $('#loginBtn').addEventListener('click', ()=>{
     const email=$('#loginEmail').value.trim().toLowerCase();
     const pass=$('#loginPass').value.trim();
@@ -318,6 +333,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   $('#logoutBtn').addEventListener('click', ()=>logout());
 
+  // routing
   $('#mainNav').addEventListener('click', (e)=>{
     const link=e.target.closest('[data-route]'); if(!link) return; e.preventDefault();
     const cur=currentUser(); if(!cur){ alert('Najprv sa prihlás'); return; }
@@ -326,16 +342,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
     showRoute(route);
   });
 
+  // mobile nav
   const hamburger=$('#hamburger'); const nav=$('#mainNav');
   hamburger.addEventListener('click',()=>{ const exp=hamburger.getAttribute('aria-expanded')==='true'; hamburger.setAttribute('aria-expanded', String(!exp)); nav.classList.toggle('show', !exp); });
   nav.addEventListener('click',(e)=>{ if(e.target.closest('a')){ hamburger.setAttribute('aria-expanded','false'); nav.classList.remove('show'); } });
 
+  // actions
   $('#saveReportBtn').addEventListener('click', saveReport);
   $('#addUserBtn').addEventListener('click', addOrUpdateUser);
   $('#clearFormBtn').addEventListener('click', clearUserForm);
-  (function bindGoalForm(){ const btn=document.querySelector('#saveGoalBtn'); if(!btn) return; btn.addEventListener('click', ()=>{ const email=document.querySelector('#goalUser').value; const target=+(document.querySelector('#goalTarget').value||0); const actual=+(document.querySelector('#goalActual').value||0); const data=getGoals(); data[email]={target,actual}; saveGoals(data); showToast('✅ Cieľ uložený'); renderGoalsPage(); renderDashboard(); }); })();
+  bindGoalForm();
 
-  // Add-report link
+  // Add-report link in notice
   const addLink=document.querySelector('#addReportLink');
   if(addLink){
     addLink.addEventListener('click',(e)=>{

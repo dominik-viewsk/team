@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v3.6 – Mesačný súhrn</title>
+  <title>View Team Dashboard PRO v3.8 – Týždenný súhrn</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header hidden" id="appHeader">
-    <div class="container header-row">
+    <div class=" container header-row">
       <a class="brand" href="#" data-route="dashboard">
         <img src="viewlogo.png" alt="View logo" class="logo">
       </a>
@@ -29,6 +29,7 @@
   </header>
 
   <main class="container content">
+    <!-- LOGIN -->
     <section id="loginView" class="card login-card">
       <h2>Prihlásenie</h2>
       <div class="field"><label>E-mail</label><input id="loginEmail" type="email" placeholder="vas.email@viewsk.com"></div>
@@ -36,27 +37,48 @@
       <div class="actions"><button id="loginBtn" class="btn">Prihlásiť</button></div>
     </section>
 
+    <!-- APP -->
     <section id="appView" class="hidden">
+      <!-- DASHBOARD -->
       <section id="route-dashboard" class="route hidden">
         <h2>Dashboard</h2>
+
         <div class="card" id="welcomeCard">Vitaj späť.</div>
-<div class="manager-top-grid only-manager hidden" id="managerTopSummary">
-        <div id="managerSummary" class="card only-manager hidden">
-          <h3>Tímový prehľad cieľov</h3>
-          <div class="summary-grid">
-            <div class="circle-wrap">
-              <div id="teamCircle" class="circle"></div>
-              <div class="circle-label">Priemerné plnenie</div>
+
+        <!-- Horný grid pre manažéra: ciele + aktivity -->
+        <div id="managerTopGrid" class="manager-top-grid only-manager hidden">
+          <div id="managerSummary" class="card">
+            <h3>Tímový prehľad cieľov</h3>
+            <div class="summary-grid">
+              <div class="circle-wrap">
+                <div id="teamCircle" class="circle"></div>
+                <div class="circle-label">Priemerné plnenie</div>
+              </div>
+              <div class="stats">
+                <div><b>Obchodníci s cieľom:</b> <span id="statUsers">0</span></div>
+                <div><b>Súčet cieľov:</b> <span id="statTargets">0</span> €</div>
+                <div><b>Súčet plnenia:</b> <span id="statActuals">0</span> €</div>
+                <div><b>Priemer tímu:</b> <span id="statAvg">0,0 %</span></div>
+              </div>
             </div>
-            <div class="stats">
-              <div><b>Obchodníci s cieľom:</b> <span id="statUsers">0</span></div>
-              <div><b>Súčet cieľov:</b> <span id="statTargets">0</span> €</div>
-              <div><b>Súčet plnenia:</b> <span id="statActuals">0</span> €</div>
-              <div><b>Priemer tímu:</b> <span id="statAvg">0,0 %</span></div>
-            </div>
+          </div>
+
+          <div id="weeklySummaryCard" class="card">
+            <h3>Aktivity za minulý týždeň</h3>
+            <table class="table table-green" id="weeklySummaryTable">
+              <thead><tr><th>Aktivita</th><th>Počet</th></tr></thead>
+              <tbody></tbody>
+            </table>
           </div>
         </div>
 
+        <!-- Upozornenie na chýbajúci report s odkazom -->
+        <div class="card notice hidden" id="missingReportNotice">
+          Tento týždeň ešte nemáte vyplnený report.
+          <a href="#" id="addReportLink" class="link-green" style="margin-left:6px;">Pridať report</a>
+        </div>
+
+        <!-- môj cieľ (len obchodník) -->
         <div id="myGoalCard" class="card hidden">
           <h3>Môj cieľ</h3>
           <div class="summary-grid">
@@ -71,22 +93,9 @@
             </div>
           </div>
         </div>
-
-        <div class="card notice hidden" id="missingReportNotice">
-          Tento týždeň ešte nemáte vyplnený report.
-          <a href="#" id="addReportLink" class="link-green" style="margin-left:6px;">Pridať report</a>
-        </div>
-
-        <div id="monthlySummaryCard" class="card only-manager hidden">
-<h3>Aktivity za minulý týždeň</h3>
-          <table class="table table-green" id="monthlySummaryTable">
-            <thead><tr><th>Aktivita</th><th>Počet</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-  </div>
       </section>
 
+      <!-- REPORTY -->
       <section id="route-reporty" class="route hidden">
         <h2>Reporty</h2>
         <div class="grid-2">
@@ -128,6 +137,7 @@
         </div>
       </section>
 
+      <!-- CIELE -->
       <section id="route-ciele" class="route hidden">
         <h2>Ciele</h2>
 
@@ -172,6 +182,7 @@
         </div>
       </section>
 
+      <!-- OBCHODNÍCI -->
       <section id="route-obchodnici" class="route hidden">
         <h2>Obchodníci</h2>
         <div class="card only-manager hidden">
@@ -213,6 +224,6 @@
 
   <div id="toast" class="toast hidden">✅ Uložené</div>
 
-  <script src="script.js?v=360"></script>
+  <script src="script.js?v=380"></script>
 </body>
 </html>

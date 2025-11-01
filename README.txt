@@ -1,13 +1,13 @@
-View Team Dashboard PRO v3.6 – Mesačný súhrn + Add‑report link
-=================================================================
+View Team Dashboard PRO v3.8 – Aktivity za minulý týždeň + predvyplnený login
+====================================================================================
 Novinky:
-- Klikateľný odkaz „Pridať report“ priamo v upozornení na dashboarde.
-- Manažérsky dashboard obsahuje „Aktivity za aktuálny mesiac“.
-  - Súčet: oslovenia, dohodnuté stretnutia, realizované stretnutia, ponuky, objednávky.
-  - Filtrovanie podľa mesiaca funguje pre reporty uložené od verzie 3.6 (pole savedAt).
-  - Staršie reporty bez dátumu sa do súhrnu zarátajú (spätná kompatibilita).
-- Zachované: správa obchodníkov, ciele, reporty, login a navigácia.
-- Ukladanie výhradne v localStorage (offline, bez backendu).
+- Manažérsky dashboard zobrazuje „Aktivity za minulý týždeň“ (nie mesačne).
+  - Počíta súčty oslovení, dohodnutých a realizovaných stretnutí, ponúk a objednávok.
+  - Funguje aj cez prechod roka (ISO týždeň + rok). Staršie reporty bez dátumu sa rátajú podľa čísla týždňa.
+- „Vitaj späť“ hore, pod tým dvojstĺpcový grid: Tímový prehľad cieľov + Aktivity za minulý týždeň.
+- Predvyplnené prihlasovanie pre manažéra (email + heslo).
+- Opravená navigácia, login a zobrazenie sekcií podľa role.
+- Všetko offline cez localStorage (bez backendu).
 
 Súbory:
 - index.html
@@ -15,11 +15,11 @@ Súbory:
 - script.js
 - README.txt
 
-Demo prístupy (nezabudni zmeniť v produkcii):
+Login (demo – zmeňte v produkcii):
 - manažér: dominik@viewsk.com / viewadmin2025
 - obchodníci: lukac@viewsk.com, illesova@viewsk.com / view2025
 
 Nasadenie:
-1) Nahraj súbory do GitHub Pages (dominik-viewsk/team).
-2) Na stránke stlač Ctrl+Shift+R (tvrdý refresh).
-3) Logo viewlogo.png ponechaj pôvodné v koreňovom priečinku repozitára.
+1) Nahrajte súbory do GitHub Pages (repo: dominik-viewsk/team).
+2) Tvrdý refresh: Ctrl+Shift+R.
+3) Logo viewlogo.png nechajte v koreňovom priečinku repozitára.
