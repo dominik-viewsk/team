@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>View Team Dashboard PRO v3.2 – Goals Manager</title>
+  <title>View Team Dashboard PRO v3.3 – Správa obchodníkov</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -113,15 +113,13 @@
 
       <section id="route-ciele" class="route hidden">
         <h2>Ciele</h2>
+
         <div id="addGoalCard" class="card only-manager hidden">
           <h3>Pridať alebo upraviť cieľ</h3>
           <div class="grid-2">
             <div class="field">
               <label>Obchodník</label>
-              <select id="goalUser">
-                <option value="lukac@viewsk.com">Róbert Lukáč (lukac@viewsk.com)</option>
-                <option value="illesova@viewsk.com">Martina Illesová (illesova@viewsk.com)</option>
-              </select>
+              <select id="goalUser"></select>
             </div>
             <div class="field"><label>Cieľ (€)</label><input id="goalTarget" type="number" min="0" step="100" value="5000"></div>
           </div>
@@ -130,6 +128,7 @@
             <div class="actions align-end"><button id="saveGoalBtn" class="btn">Uložiť cieľ</button></div>
           </div>
         </div>
+
         <div id="managerGoals" class="only-manager hidden">
           <div class="card">
             <h3>Nastavené ciele</h3>
@@ -139,6 +138,7 @@
             </table>
           </div>
         </div>
+
         <div id="salesGoal" class="card hidden">
           <h3>Môj cieľ</h3>
           <div class="summary-grid">
@@ -157,7 +157,35 @@
 
       <section id="route-obchodnici" class="route hidden">
         <h2>Obchodníci</h2>
-        <div class="card">Správa obchodníkov bude doplnená v ďalšom kroku.</div>
+        <div class="card only-manager hidden">
+          <h3>Správa obchodníkov</h3>
+          <div class="grid-2">
+            <div class="field"><label>Meno</label><input id="uName" placeholder="Meno a priezvisko"></div>
+            <div class="field"><label>E-mail</label><input id="uEmail" placeholder="priezvisko@viewsk.com"></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Heslo</label><input id="uPass" type="text" placeholder="dočasné heslo"></div>
+            <div class="field">
+              <label>Rola</label>
+              <select id="uRole">
+                <option value="sales">obchodník</option>
+                <option value="manager">manažér</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="addUserBtn" class="btn">➕ Pridať / Uložiť obchodníka</button>
+            <button id="clearFormBtn" class="btn small" style="margin-left:8px">Vyčistiť formulár</button>
+          </div>
+        </div>
+
+        <div class="card only-manager hidden">
+          <h3>Zoznam obchodníkov</h3>
+          <table class="table table-green" id="usersTable">
+            <thead><tr><th>Meno</th><th>E-mail</th><th>Rola</th><th># reportov</th><th>Cieľ?</th><th>Akcie</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </section>
     </section>
   </main>
@@ -168,6 +196,6 @@
 
   <div id="toast" class="toast hidden">✅ Uložené</div>
 
-  <script src="script.js?v=320"></script>
+  <script src="script.js?v=330"></script>
 </body>
 </html>
