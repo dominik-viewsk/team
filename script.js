@@ -78,7 +78,24 @@ function showRoute(route){
 // ===== Reports (from v2.8) =====
 function getISOWeek(d=new Date()){ d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const n=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-n); const y=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-y)/86400000)+1)/7) }
 function getWeekRangeString(t=new Date()){ const d=new Date(t),n=d.getDay()||7,m=new Date(d); m.setDate(d.getDate()-(n-1)); const s=new Date(m); s.setDate(m.getDate()+6); const M=['januára','februára','marca','apríla','mája','júna','júla','augusta','septembra','októbra','novembra','decembra']; const f=x=>`${x.getDate()}. ${M[x.getMonth()]}`; return `${f(m)} – ${f(s)}` }
-function checkMissingReport(email,weekNum){ const data=getReports(); const has=data[email] && data[email][String(weekNum)]; $('#missingReportNotice').classList.toggle('hidden', !!has); }
+function checkMissingReport(email, weekNum) {
+  const data = getReports();
+  const has = data[email] && data[email][String(weekNum)];
+  const notice = $('#missingReportNotice');
+  if (!has) {
+    notice.innerHTML = `Tento týždeň ešte nemáte vyplnený report. 
+      <a href="#" id="addReportLink" class="link-green" style="margin-left:6px;">Pridať report</a>`;
+    notice.classList.remove('hidden');
+    const link = $('#addReportLink');
+    if (link) link.addEventListener('click', (e) => {
+      e.preventDefault();
+      showRoute('reporty');
+      document.querySelector('#rWeek').focus();
+    });
+  } else {
+    notice.classList.add('hidden');
+  }
+}
 
 function renderMyReports(){
   const cur=currentUser(); if(!cur) return;
