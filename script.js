@@ -147,7 +147,7 @@ function renderDashboard(){
     $('#myActual').textContent=(+g.actual||0).toLocaleString('sk-SK');
     $('#myPct').textContent=pctText(p);
     renderCircle($('#myCircle'),isFinite(p)?Math.max(0,Math.min(200,p)):0);
-    $('#myGoalCard').classList.remove('hidden'); $('#managerSummary').classList.add('hidden'); $('#monthlySummaryCard').classList.add('hidden');
+    $('#myGoalCard').classList.remove('hidden'); $('#managerTopSummary').classList.remove('hidden'); $('#monthlySummaryCard').classList.add('hidden');
   }
 }
 function renderGoalsPage(){
