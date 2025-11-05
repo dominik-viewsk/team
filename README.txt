@@ -1,25 +1,44 @@
-View Team Dashboard PRO v3.8 – Aktivity za minulý týždeň + predvyplnený login
-====================================================================================
-Novinky:
-- Manažérsky dashboard zobrazuje „Aktivity za minulý týždeň“ (nie mesačne).
-  - Počíta súčty oslovení, dohodnutých a realizovaných stretnutí, ponúk a objednávok.
-  - Funguje aj cez prechod roka (ISO týždeň + rok). Staršie reporty bez dátumu sa rátajú podľa čísla týždňa.
-- „Vitaj späť“ hore, pod tým dvojstĺpcový grid: Tímový prehľad cieľov + Aktivity za minulý týždeň.
-- Predvyplnené prihlasovanie pre manažéra (email + heslo).
-- Opravená navigácia, login a zobrazenie sekcií podľa role.
-- Všetko offline cez localStorage (bez backendu).
+View Team Dashboard PRO v3.9 – Sales Summary (Obchodníci vs Manažér)
+=====================================================================
 
-Súbory:
-- index.html
-- style.css
-- script.js
-- README.txt
+📌 Novinky verzie 3.9:
+----------------------
+- Obchodníci vidia len:
+  • Dashboard (ich vlastné aktivity za MINULÝ týždeň)
+  • Reporty (len formulár na pridanie reportu)
+- Manažér má prístup ku všetkým sekciám:
+  • Dashboard – "Vitaj späť", tímové ciele + aktivity za MINULÝ týždeň
+  • Reporty – prehľad reportov tímu
+  • Ciele – možnosť pridávať a upravovať ciele obchodníkov
+  • Obchodníci – správa používateľov
+- Údaje sa ukladajú do localStorage (offline).
+- Výpočty sa riadia podľa ISO týždňov a roku (správne aj cez prechod roka).
+- Predvyplnené prihlasovanie pre manažéra.
 
-Login (demo – zmeňte v produkcii):
-- manažér: dominik@viewsk.com / viewadmin2025
-- obchodníci: lukac@viewsk.com, illesova@viewsk.com / view2025
+🔐 Prihlasovacie údaje:
+----------------------
+Manažér:
+  dominik@viewsk.com / viewadmin2025
+Obchodníci:
+  lukac@viewsk.com / view2025
+  illesova@viewsk.com / view2025
 
-Nasadenie:
-1) Nahrajte súbory do GitHub Pages (repo: dominik-viewsk/team).
-2) Tvrdý refresh: Ctrl+Shift+R.
-3) Logo viewlogo.png nechajte v koreňovom priečinku repozitára.
+📊 Dashboard:
+-------------
+- Manažér: zobrazuje tímový prehľad cieľov a celkové aktivity tímu za minulý týždeň.
+- Obchodník: zobrazuje len jeho vlastné aktivity za minulý týždeň.
+
+🧩 Súbory:
+----------
+index.html   → štruktúra webu
+style.css    → štýly (responzívne, čisté)
+script.js    → logika aplikácie, výpočty a správa dát
+README.txt   → tento popis
+
+🚀 Nasadenie:
+-------------
+1. Nahraj všetky súbory (vrátane viewlogo.png) do repozitára GitHub Pages: dominik-viewsk/team
+2. Commitni zmeny a otvor stránku: https://dominik-viewsk.github.io/team
+3. Hotovo – systém bude fungovať lokálne aj online.
+
+© View – Interný obchodnícky portál (v3.9)
